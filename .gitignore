@@ -1,0 +1,8 @@
+EffectEditor\obj/
+EffectEditor\obj\x86/
+EffectEditor/obj/x86/Debug/
+EffectEditor/obj/x86/Release/
+EffectEditor/bin/Debug/EffectEditor.exe.config
+EffectEditor/bin/Debug/
+EffectEditor/bin/Release/
+EffectEditor/build.bat

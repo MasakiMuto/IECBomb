@@ -1,0 +1,263 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ext="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
+        xmlns:Masa_ParticleEngine="clr-namespace:Masa.ParticleEngine;assembly=ParticleEngine"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:my="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
+        xmlns:xn="clr-namespace:EffectEditor"
+        xmlns:ShaderEffectLibrary="clr-namespace:ShaderEffectLibrary" x:Class="EffectEditor.MainWindow"
+        x:Name="window"
+        Title="Masa Effect Editor"
+        Height="600"
+        MinWidth="400"
+        MinHeight="501"
+        Activated="window_Activated"
+        d:DesignWidth="1019"
+        Deactivated="window_Deactivated"
+        ResizeMode="CanResizeWithGrip"
+        WindowStyle="ThreeDBorderWindow"
+        mc:Ignorable="d" Closing="window_Closing">
+    <DockPanel>
+        <Menu x:Name="menu1"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Top"
+              HorizontalContentAlignment="Stretch"
+              DockPanel.Dock="Top"
+              d:LayoutOverrides="VerticalAlignment">
+            <MenuItem d:IsLocked="True" Header="ファイル">
+                <MenuItem x:Name="new"
+                          Command="ApplicationCommands.New"
+                          CommandTarget="{Binding ElementName=scriptCode}" />
+                <MenuItem Command="ApplicationCommands.Open" CommandTarget="{Binding ElementName=scriptCode}" />
+                <MenuItem Command="ApplicationCommands.SaveAs" CommandTarget="{Binding ElementName=scriptCode}" />
+                <MenuItem Command="ApplicationCommands.Save" CommandTarget="{Binding ElementName=scriptCode}" />
+                <Separator />
+                <MenuItem x:Name="exit"
+                          Click="exit_Click"
+                          Command="ApplicationCommands.Close"
+                          CommandTarget="{Binding ElementName=window}" />
+            </MenuItem>
+            <MenuItem Header="プロジェクト">
+                <MenuItem Click="openProjectClick" Header="開く" />
+                <MenuItem Click="saveAsProjectClick" Header="名前を付けて保存" />
+                <MenuItem Click="saveProjectClick" Header="上書き保存" />
+                <MenuItem x:Name="latestProjects" Header="最近使ったファイル" />
+                <Separator />
+                <MenuItem Click="setTexturePathClick" Header="テクスチャパス設定" />
+            </MenuItem>
+            <MenuItem d:IsLocked="True" Header="編集">
+                <MenuItem Command="ApplicationCommands.Undo" />
+                <MenuItem Command="ApplicationCommands.Redo" />
+                <Separator />
+                <MenuItem Command="ApplicationCommands.Copy" />
+                <MenuItem Command="ApplicationCommands.Cut" />
+                <MenuItem Command="ApplicationCommands.Paste" />
+                <MenuItem Header="コメントアウト" />
+            </MenuItem>
+        </Menu>
+        <StatusBar VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
+            <StatusBarItem x:Name="statusLabel" Content="Ready..." />
+        </StatusBar>
+        <DockPanel x:Name="dockPanel1"
+                   HorizontalAlignment="Stretch"
+                   DockPanel.Dock="Top"
+                   d:LayoutOverrides="Height">
+            <WindowsFormsHost x:Name="windowsFormsHost1"
+                              Width="400"
+                              Height="480"
+                              Margin="2"
+                              Panel.ZIndex="1"
+                              DockPanel.Dock="Left"
+                              ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                <xn:XNAControl x:Name="XNAControl"
+                               Width="400"
+                               Height="480" />
+            </WindowsFormsHost>
+            <DockPanel MinHeight="{Binding MinHeight, ElementName=windowsFormsHost1}">
+                <StackPanel x:Name="stackPanel3"
+                            VerticalAlignment="Bottom"
+                            DockPanel.Dock="Bottom"
+                            Orientation="Horizontal">
+                    <Button x:Name="playButton"
+                            Width="75"
+                            Margin="2,0"
+                            Click="playButton_Click"
+                            Content="実行" />
+                    <Button x:Name="playExitButton"
+                            Width="75"
+                            Margin="2,0"
+                            Click="playExitButton_Click"
+                            Content="再生終了" />
+                    <Button Width="75"
+                            Margin="2,0"
+                            Click="RefreshButtonClick"
+                            Content="再生成" />
+                </StackPanel>
+                <TabControl x:Name="tabControl1"
+                            Margin="2,0,0,0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            ClipToBounds="True"
+                            DockPanel.Dock="Top"
+                            ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                    <TabItem x:Name="tabItem1" Header="コード">
+                        <DockPanel HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch"
+                                   ScrollViewer.CanContentScroll="True"
+                                   ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                            <TextBox x:Name="scriptCode"
+                                     Height="{Binding ActualHeight, ElementName=stackPanel}"
+                                     AcceptsReturn="True"
+                                     AcceptsTab="True"
+                                     Drop="scriptCode_Drop"
+                                     FontFamily="Courier New"
+                                     KeyDown="scriptCode_KeyDown"
+                                     PreviewDragOver="scriptCode_PreviewDragOver"
+                                     PreviewKeyDown="scriptCode_PreviewKeyDown"
+                                     ScrollViewer.CanContentScroll="True"
+                                     SnapsToDevicePixels="True"
+                                     TextChanged="scriptCode_TextChanged"
+                                     TextWrapping="Wrap"
+                                     UndoLimit="50"
+                                     VerticalScrollBarVisibility="Visible" />
+
+                        </DockPanel>
+                    </TabItem>
+                    <TabItem Header="パーティクル設定">
+                        <DockPanel>
+                            <DockPanel Width="100">
+                                <DockPanel Margin="0"
+                                           VerticalAlignment="Bottom"
+                                           DockPanel.Dock="Bottom"
+                                           LastChildFill="False"
+                                           ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                    <Button x:Name="button"
+                                            Width="36.643"
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Click="addItemButtonClick"
+                                            Content="+" />
+                                    <Button Width="{Binding Width, ElementName=button}"
+                                            Click="removeButtonClick"
+                                            Content="-"
+                                            DockPanel.Dock="Right" />
+                                </DockPanel>
+                                <ListBox x:Name="itemsList"
+                                         VerticalContentAlignment="Top"
+                                         DockPanel.Dock="Top"
+                                         IsSynchronizedWithCurrentItem="True"
+                                         SelectionChanged="itemsList_SelectionChanged"
+                                         SourceUpdated="itemsList_SourceUpdated" />
+                            </DockPanel>
+                            <DockPanel DockPanel.Dock="Right" Width="100" d:LayoutOverrides="Height" >
+                            	<TextBlock TextWrapping="Wrap" VerticalAlignment="Top" DockPanel.Dock="Top" Text="Texture List"/>
+                            	<Canvas Height="100" VerticalAlignment="Bottom" Width="100" Background="#FF6C6C6C" DockPanel.Dock="Bottom">
+                            		<Image x:Name="listTexturePreview" Height="100" Width="100" VerticalAlignment="Top" d:LayoutOverrides="Width"/>
+                            	</Canvas>
+                            	<ListBox x:Name="textureList" DockPanel.Dock="Top" SelectionChanged="textureList_SelectionChanged"/>
+                            </DockPanel>
+                            <StackPanel DockPanel.Dock="Right">
+                                <DockPanel Margin="0,2">
+                                    <Label Width="{Binding ActualWidth, ElementName=label}" Content="Name" />
+                                    <TextBox x:Name="itemNameText"
+                                             Text="name"
+                                             TextWrapping="Wrap" />
+                                </DockPanel>
+                                <DockPanel Margin="0,2">
+                                    <Label x:Name="label" Content="Texture" />
+                                    <Button Click="OpenTextureClick"
+                                            Content="..."
+                                            DockPanel.Dock="Right" />
+                                    <TextBox x:Name="texturePathText"
+                                             Text=""
+                                             TextWrapping="Wrap"
+                                             UndoLimit="3" />
+                                </DockPanel>
+                                <StackPanel Margin="0,1" Orientation="Horizontal" Background="#FF979797">
+                                    <Image x:Name="texturePreviewImage"
+                                           Width="100"
+                                           Height="100"
+                                           HorizontalAlignment="Right"
+                                           VerticalAlignment="Top"
+                                           OpacityMask="Black" >
+                                    	<Image.Effect>
+                                    		<ShaderEffectLibrary:MonochromeEffect FilterColor="#FFC04040"/>
+                                    	</Image.Effect>
+                                    </Image>
+                                    <ext:ColorCanvas x:Name="textureColor"
+                                                     HexadecimalString="#FFffffff"
+                                                     SelectedColor="White" />
+                                </StackPanel>
+                                <StackPanel Margin="0,2" Orientation="Horizontal">
+                                    <Label Width="{Binding ActualWidth, ElementName=label}" Content="Mass" />
+                                    <ext:IntegerUpDown x:Name="particleMassNumber"
+                                                       DefaultValue="512"
+                                                       Increment="128"
+                                                       Maximum="65535"
+                                                       Minimum="1"
+                                                       Value="512" />
+                                </StackPanel>
+                                <StackPanel Margin="0,2" Orientation="Horizontal">
+                                    <Label x:Name="label1"
+                                           Width="{Binding ActualWidth, ElementName=label}"
+                                           Content="Blend" />
+                                    <ComboBox x:Name="blendModeSelector"
+                                              Width="120"
+                                              SelectedIndex="0">
+                                        <ComboBox.DataContext>
+                                            <Masa_ParticleEngine:ParticleBlendMode>Add</Masa_ParticleEngine:ParticleBlendMode>
+                                        </ComboBox.DataContext>
+                                    </ComboBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                	<Label Content="Layer" Width="{Binding Width, ElementName=label1}"/>
+                                	<ext:IntegerUpDown x:Name="layerNumber" Minimum="-64" Maximum="64" Value="0"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </DockPanel>
+                    </TabItem>
+                    <TabItem Header="設定">
+                        <Grid Background="#FFE5E5E5">
+                            <CheckBox x:Name="is2DCheckBox"
+                                      Margin="26,40,0,0"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Top"
+                                      Checked="is2DCheckBox_Checked"
+                                      Content="2Dパーティクルにする"
+                                      IsChecked="True"
+                                      Unchecked="is2DCheckBox_Unchecked" />
+                            <StackPanel Margin="26,62,26,0"
+                                        VerticalAlignment="Top"
+                                        Orientation="Horizontal">
+                                <Label Content="コントロール" />
+                                <Label Content="幅" />
+                                <ext:IntegerUpDown x:Name="controlWidth"
+                                                   Width="100"
+                                                   DefaultValue="400"
+                                                   Increment="40"
+                                                   Maximum="2000"
+                                                   Minimum="0"
+                                                   Text="400" />
+                                <Label Content="高さ" />
+                                <ext:IntegerUpDown x:Name="controlHeight"
+                                                   Width="100"
+                                                   DefaultValue="480"
+                                                   Increment="40"
+                                                   Maximum="2000"
+                                                   Minimum="0"
+                                                   Value="480" />
+                                <Button Width="75"
+                                        Click="controlSizeChanged"
+                                        Content="適用" />
+                            </StackPanel>
+
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </DockPanel>
+        </DockPanel>
+
+    </DockPanel>
+</Window>

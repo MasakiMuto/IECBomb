@@ -1,0 +1,204 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Xml.Linq;
+using Masa.ParticleEngine;
+using Masa.ScriptEngine;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using TextureFunc = System.Func<string, Microsoft.Xna.Framework.Graphics.Texture2D>;
+
+namespace EffectEditor
+{
+	internal class EffectProject
+	{
+		ScriptManager script;
+		ScriptEffectManager particle;
+		readonly GraphicsDevice device;
+		Vector2 generatePosition;
+		Effect effect;
+		TextureFunc textureGetFunction;
+		internal Dictionary<string, PMIData> PMIDict;
+		readonly Random rand;
+		public static bool Is2D { get; set; }
+
+		/// <summary>
+		/// テクスチャがあるディレクトリへの絶対パス
+		/// </summary>
+		public string TexturePath
+		{
+			get;
+			set;
+		}
+
+		public EffectProject(GraphicsDevice gd, TextureFunc textureFunc)
+		{
+			generatePosition = new Vector2(gd.Viewport.Width, gd.Viewport.Height) * .5f;
+			device = gd;
+			//var content = new ContentManager(new GraphicService(device));
+			Is2D = true;
+			script = new ScriptManager();
+			textureGetFunction = textureFunc;
+			rand = new Random();
+			PMIDict = new Dictionary<string, PMIData>();
+			TexturePath = "";
+		}
+
+		public void SetEffect(Effect ef)
+		{
+			effect = ef;
+		}
+
+		public static EffectProject LoadFromFile(string fileName, GraphicsDevice gd, TextureFunc textureFunc)
+		{
+			var prj = new EffectProject(gd, textureFunc);
+			prj.Load(fileName);
+			return prj;
+		}
+
+		public void Load(string fileName)
+		{
+			using (var str = File.OpenRead(fileName))
+			{
+				XDocument xml = XDocument.Load(str);
+				TexturePath = xml.Root.Element("texture").Value;
+				PMIDict = ParticleManagerInitializerManager.LoadPMIDatas(fileName).ToDictionary(i => i.Name);
+			};
+			MakeParticleManager();
+		}
+
+		public void PlayEffect(string fileName)
+		{
+			if (particle != null)
+			{
+				particle.LoadScript(fileName);
+				particle.Set(script.PathToKey(fileName), generatePosition);
+			}
+		}
+
+		public void StopEffect()
+		{
+			if (particle != null)
+			{
+				particle.ClearParticle();
+			}
+		}
+
+		public PMIData AddParticleManager(string name, string texture, ushort num, float r, float g, float b, float a, ParticleBlendMode blend, int layer)
+		{
+			var data = new PMIData(texture, name, num, new Vector4(r, g, b, a), blend, layer);
+			PMIDict[name] = data;
+			MakeParticleManager();
+			return data;
+		}
+
+		public void UpdateParticleManager(string baseName, string newName, PMIData data)
+		{
+			if (baseName != newName)
+			{
+				PMIDict.Remove(baseName);
+				PMIDict[newName] = data;
+				data.Name = newName;
+			}
+			MakeParticleManager();
+		}
+
+		public void RemoveParticleManager(string name)
+		{
+			if (PMIDict.ContainsKey(name))
+			{
+				PMIDict.Remove(name);
+				MakeParticleManager();
+			}
+		}
+
+		internal void Reset()
+		{
+			MakeParticleManager();
+		}
+
+		void MakeParticleManager()
+		{
+			ParticleManagerInitializer[] pmi = PMIDict.Values.Select(i => i.CreatePMI(textureGetFunction)).ToArray();
+			if (Is2D)
+			{
+				particle = new ScriptEffectManager(
+					script, device, effect, ParticleMode.TwoD,
+					device.Viewport.Width, device.Viewport.Height, pmi, rand);
+			}
+			else
+			{
+				particle = new ScriptEffectManager(
+					script, device, effect, ParticleMode.ThreeD,
+					Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, device.Viewport.AspectRatio, 1, 100),
+					new Vector2(device.Viewport.Width, device.Viewport.Height), pmi, rand);
+				//particle = new ScriptEffectManager(script, device, effect, ParticleMode.ThreeD, 400, 480, PMIDict.Values.
+				//Select(i => i.CreatePMI(textureGetFunction)).ToArray(),
+				//rand);
+			}
+		}
+
+		public void SaveToFile(string fileName)
+		{
+			XDocument xml = new XDocument(new XDeclaration("1.0", "utf-8", "yes"), new XElement("effect_project"));
+			var root = xml.Root;
+
+			root.Add(new XElement("texture", TexturePath));
+			root.Add(PMIDict.Values.Select
+				(i => new XElement
+					(
+						 ParticleManagerInitializerManager.PMITag,
+						 new XElement("texture", i.TextureName),
+						 new XElement("name", i.Name),
+						 new XElement("mass", i.Mass),
+						 new XElement("blend", Enum.GetName(typeof(ParticleBlendMode), i.Blend)),
+						 new XElement("color",
+							 new XElement("r", i.Color.X),
+							 new XElement("g", i.Color.Y),
+							 new XElement("b", i.Color.Z),
+							 new XElement("a", i.Color.W)
+						 ),
+						 new XElement("layer", i.Layer)
+					)
+				)
+			);
+
+
+
+			xml.Save(fileName);
+		}
+
+		public void Update()
+		{
+			if (particle != null)
+			{
+				particle.Update();
+			}
+		}
+
+		public void Draw()
+		{
+			if (particle != null)
+			{
+				if (Is2D)
+				{
+					particle.Draw();
+				}
+				else
+				{
+					particle.Draw(GetView());
+				}
+			}
+		}
+
+		Matrix GetView()
+		{
+			Vector3 Position = Vector3.Zero;
+
+			return Matrix.CreateLookAt(Position, Position + Vector3.Forward, Vector3.Up);
+			//return Matrix.CreateLookAt(Position, Target, Upper);
+		}
+
+	}
+}
