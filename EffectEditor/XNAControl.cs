@@ -138,8 +138,9 @@ namespace EffectEditor
 
 		public static void ShowExceptionBox(Exception e)
 		{
-			var box = new Microsoft.SqlServer.MessageBox.ExceptionMessageBox(e);
-			box.Show(new Handler());
+			//var box = new Microsoft.SqlServer.MessageBox.ExceptionMessageBox(e);
+			//box.Show(new Handler());
+			MessageBox.Show(e.ToString());
 		}
 
 		public void PlayScript(string lines)
