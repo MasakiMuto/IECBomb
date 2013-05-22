@@ -21,9 +21,9 @@ namespace EffectEditor
 		public static IntPtr WindowHandle;
 		StringWriter ErrorLogger;
 		DispatcherTimer timer;
-		FileManager scriptFileManager;
 
 		ProjectControl projectControl;
+		ScriptControl scriptControl;
 
 		//[System.Runtime.InteropServices.DllImport("User32.dll")]
 		//static extern IntPtr SendMessage(IntPtr hWnnd, int msg, int wParam, int[] lParam);
@@ -38,10 +38,10 @@ namespace EffectEditor
 			timer.Tick += new EventHandler(timer_Tick);
 			scriptCode.CommandBindings.AddRange(new[]
 				{
-					new CommandBinding(ApplicationCommands.New, NewFile),
-					new CommandBinding(ApplicationCommands.Save, (o,e)=>scriptFileManager.Save()),
-					new CommandBinding(ApplicationCommands.SaveAs, (o,e)=>scriptFileManager.SaveAs()),
-					new CommandBinding(ApplicationCommands.Open, OpenScript),
+					new CommandBinding(ApplicationCommands.New, (o,e) => scriptControl.NewFile()),
+					new CommandBinding(ApplicationCommands.Save, (o,e) => scriptControl.Save()),
+					new CommandBinding(ApplicationCommands.SaveAs, (o,e) => scriptControl.SaveAs()),
+					new CommandBinding(ApplicationCommands.Open, (o,e) => scriptControl.OpenFile()),
 				});
 			this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Close, (o, e) => this.Close()));
 			//XNAControl.onTextureLoaded += (s) => textureListBox.Items.Add(System.IO.Path.GetFileNameWithoutExtension(s));
@@ -51,11 +51,7 @@ namespace EffectEditor
 			//op.
 
 			projectControl = new ProjectControl(this);
-
-			scriptFileManager = new FileManager(".mss", "MaSa Script|*.mss|All Files|*.*");
-			scriptFileManager.Newed += new Action(scriptFileManager_Newed);
-			scriptFileManager.Opened += LoadScript;
-			scriptFileManager.Saved += s => SaveScript(s);
+			scriptControl = new ScriptControl(this);
 
 			blendModeSelector.ItemsSource = Enum.GetValues(typeof(Masa.ParticleEngine.ParticleBlendMode));
 			System.Diagnostics.Debug.Listeners.Add(error);
@@ -73,12 +69,7 @@ namespace EffectEditor
 		}
 
 
-		void scriptFileManager_Newed()
-		{
-			scriptCode.Text = "";
-			playExitButton_Click(this, null);
-			SetStatus("NewFile");
-		}
+		
 
 		void LoadLatestProjects()
 		{
@@ -143,88 +134,13 @@ namespace EffectEditor
 			XNAControl.ResetParticle();
 		}
 
-		#region ScriptCodeFile
-
-		void OpenScript(Object sender, ExecutedRoutedEventArgs e)
-		{
-			scriptFileManager.Open();
-		}
-
-		void LoadScript(string fileName)
-		{
-			if (fileName != null)
-			{
-				scriptCode.Text = File.ReadAllText(fileName);
-				SetStatus("Script Loaded : " + fileName);
-			}
-		}
-
 		private void scriptCode_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			SetStatus("Ready...");
-			scriptFileManager.Changed = true;
+			scriptControl.Changed();
 			//changed = true;
 		}
-
-		void NewFile(object sender, ExecutedRoutedEventArgs e)
-		{
-			//if (!ShowNotSavedAlert())
-			//{
-			//    return;
-			//}
-			scriptFileManager.New();
-			scriptCode.Text = "";
-			playExitButton_Click(this, null);
-			SetStatus("NewFile");
-		}
-
-		/// <summary>
-		/// scriptFieManager.Saveから呼ばれる
-		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		bool SaveScript(string name)
-		{
-			try
-			{
-				File.WriteAllText(name, scriptCode.Text);
-				SetStatus("Script Saved : " + name);
-				return true;
-			}
-			catch (Exception e)
-			{
-				ShowMessage("保存に失敗しました:" + e.Message);
-				return false;
-			}
-		}
-
-		void ShowMessage(string text)
-		{
-			MessageBox.Show(text);
-		}
-
-		bool ShowNotSavedAlert()
-		{
-			var res = MessageBox.Show((scriptFileManager.FileName == null ? "新規ファイル" : System.IO.Path.GetFileName(scriptFileManager.FileName)) + "は変更が保存されていません。保存せずに続行しますか?", "確認",
-				MessageBoxButton.YesNoCancel);
-			if (res == MessageBoxResult.Yes)
-			{
-				return true;
-			}
-			if (res == MessageBoxResult.Cancel)
-			{
-				return false;
-			}
-			if (res == MessageBoxResult.No)
-			{
-				return scriptFileManager.Save();
-			}
-			return false;
-		}
-
-
-		#endregion
-
+		
 		#region ScriptFormat
 
 		private void scriptCode_KeyDown(object sender, KeyEventArgs e)
@@ -350,8 +266,6 @@ namespace EffectEditor
 			projectControl.NewProject();
 		}
 
-		
-
 		void openProjectClick(object sender, RoutedEventArgs e)
 		{
 			projectControl.OpenProjectClick();
@@ -366,7 +280,6 @@ namespace EffectEditor
 		{
 			projectControl.SaveAsProject();
 		}
-
 
 		void setTexturePathClick(object sender, RoutedEventArgs e)
 		{
@@ -461,7 +374,7 @@ namespace EffectEditor
 			string[] files = e.Data.GetData(DataFormats.FileDrop) as string[];
 			if (files != null)
 			{
-				scriptFileManager.Open(files[0]);
+				scriptControl.OpenFile(files[0]);
 				//LoadScript(files[0]);
 			}
 		}
@@ -514,7 +427,7 @@ namespace EffectEditor
 
 		private void window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			if (scriptFileManager.TryClose() && projectControl.TryClose())
+			if (scriptControl.TryClose() && projectControl.TryClose())
 			{
 				return;
 			}
