@@ -211,7 +211,7 @@ namespace EffectEditor
 		{
 			float c = 255f / 256f;
 			c = 1;
-			return AddParticleItem("name", textureName, 256, c, c, c, c, ParticleBlendMode.Add, 0);
+			return AddParticleItem(textureName, textureName, 256, c, c, c, c, ParticleBlendMode.Add, 0);
 		}
 
 		public void UpdateParticleItem(string baseName, string newName, PMIData item)

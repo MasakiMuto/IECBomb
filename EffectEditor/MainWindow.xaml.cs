@@ -181,6 +181,26 @@ namespace EffectEditor
 
 		#endregion
 
+		
+
+		#region ProjectFile
+
+	
+
+		void setTexturePathClick(object sender, RoutedEventArgs e)
+		{
+			projectControl.SetTexturePath();
+		}
+
+		void removeButtonClick(object sender, RoutedEventArgs e)
+		{
+			projectControl.RemoveParticleItem(itemsList.SelectedItem as Masa.ParticleEngine.PMIData);
+		}
+
+		#endregion
+
+		#region Particle Item Setting
+
 		private void OpenTextureClick(object sender, System.Windows.RoutedEventArgs e)
 		{
 			var dlg = new OpenFileDialog()
@@ -207,8 +227,8 @@ namespace EffectEditor
 			}
 			var item = XNAControl.AddDefaultParticleItem(tex + ".png");
 			projectControl.Changed();
-			UpdatePMIDatas();
-			UpdatePMIProperty();
+			UpdateParticleItemList();
+			UpdateParticleItemPropertyDisplay();
 			//var item = AddItem();
 			//if (item != null)
 			//{
@@ -231,9 +251,8 @@ namespace EffectEditor
 				layerNumber.Value.HasValue ? layerNumber.Value.Value : 0);
 		}
 
-		void UpdatePMIItem(Masa.ParticleEngine.PMIData data)
+		void UpdateParticleItemValues(Masa.ParticleEngine.PMIData data)
 		{
-
 			data.Mass = (ushort)particleMassNumber.Value;
 			data.TextureName = texturePathText.Text;
 			data.Color = FromWColor(textureColor.SelectedColor).ToVector4();
@@ -243,7 +262,17 @@ namespace EffectEditor
 			projectControl.Changed();
 		}
 
-		public void UpdatePMIDatas()
+		void UpdateCurrentParticleItemValues()
+		{
+			var item = this.itemsList.SelectedItem as Masa.ParticleEngine.PMIData;
+			if (item != null)
+			{
+				UpdateParticleItemValues(item);
+			}
+		}
+
+
+		public void UpdateParticleItemList()
 		{
 			//int last = itemsList.SelectedIndex;
 			itemsList.ItemsSource = XNAControl.PMIDatas;
@@ -253,34 +282,11 @@ namespace EffectEditor
 			//itemsList.Items.Refresh();
 		}
 
-		void UpdatePMIItem()
-		{
-			var item = this.itemsList.SelectedItem as Masa.ParticleEngine.PMIData;
-			if (item != null)
-			{
-				UpdatePMIItem(item);
-			}
-		}
-
-		#region ProjectFile
-
-	
-
-		void setTexturePathClick(object sender, RoutedEventArgs e)
-		{
-			projectControl.SetTexturePath();
-		}
-
-		void removeButtonClick(object sender, RoutedEventArgs e)
-		{
-			projectControl.RemoveParticleItem(itemsList.SelectedItem as Masa.ParticleEngine.PMIData);
-		}
-
-		#endregion
+		
 
 		private void itemsList_SourceUpdated(object sender, DataTransferEventArgs e)
 		{
-			UpdatePMIProperty();
+			UpdateParticleItemPropertyDisplay();
 		}
 
 		private void itemsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -288,8 +294,8 @@ namespace EffectEditor
 			var item = e.RemovedItems.OfType<Masa.ParticleEngine.PMIData>().FirstOrDefault();
 			if (item != null)
 			{
-				UpdatePMIItem(item);
-				UpdatePMIDatas();
+				UpdateParticleItemValues(item);
+				UpdateParticleItemList();
 			}
 			//var item = AddItem();
 			//if (item != null)
@@ -299,11 +305,11 @@ namespace EffectEditor
 			var n = e.AddedItems.OfType<Masa.ParticleEngine.PMIData>().FirstOrDefault();
 			if (n != null)
 			{
-				UpdatePMIProperty(n);
+				UpdateParticleItemPropertyDisplay(n);
 			}
 		}
 
-		void UpdatePMIProperty(Masa.ParticleEngine.PMIData pmi)
+		void UpdateParticleItemPropertyDisplay(Masa.ParticleEngine.PMIData pmi)
 		{
 			itemNameText.Text = pmi.Name;
 			texturePathText.Text = pmi.TextureName;
@@ -319,16 +325,24 @@ namespace EffectEditor
 				image = null;
 				GC.Collect();
 			}
-			catch { }
+			catch 
+			{
+				texturePreviewImage.Source = null;
+			}
 			projectControl.SetTextureList();
 		}
 
-		void UpdatePMIProperty()
+		void UpdateParticleItemPropertyDisplay()
 		{
 			var pmi = itemsList.SelectedItem as Masa.ParticleEngine.PMIData;
 			if (pmi == null) return;
-			UpdatePMIProperty(pmi);
+			UpdateParticleItemPropertyDisplay(pmi);
 		}
+
+
+		#endregion
+
+		
 
 
 		public void SetStatus(string txt)

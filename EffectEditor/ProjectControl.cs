@@ -119,7 +119,7 @@ namespace EffectEditor
 
 		void UpdatePMIDatas()
 		{
-			window.UpdatePMIDatas();
+			window.UpdateParticleItemList();
 		}
 
 		public void SetTextureList() 
