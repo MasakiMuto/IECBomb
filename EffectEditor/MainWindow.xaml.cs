@@ -21,7 +21,9 @@ namespace EffectEditor
 		public static IntPtr WindowHandle;
 		StringWriter ErrorLogger;
 		DispatcherTimer timer;
-		FileManager projectFileManager, scriptFileManager;
+		FileManager scriptFileManager;
+
+		ProjectControl projectControl;
 
 		//[System.Runtime.InteropServices.DllImport("User32.dll")]
 		//static extern IntPtr SendMessage(IntPtr hWnnd, int msg, int wParam, int[] lParam);
@@ -47,10 +49,8 @@ namespace EffectEditor
 			var error = new System.Diagnostics.TextWriterTraceListener(ErrorLogger);
 			//var op = (System.Diagnostics.DefaultTraceListener)System.Diagnostics.Debug.Listeners[0];
 			//op.
-			projectFileManager = new FileManager(".efprj", "Masa Effect Project|*.efprj|All Files|*.*");
-			projectFileManager.Newed += new Action(projectFileManager_Newed);
-			projectFileManager.Opened += OpenProject;
-			projectFileManager.Saved += SaveProject;
+
+			projectControl = new ProjectControl(this);
 
 			scriptFileManager = new FileManager(".mss", "MaSa Script|*.mss|All Files|*.*");
 			scriptFileManager.Newed += new Action(scriptFileManager_Newed);
@@ -80,91 +80,20 @@ namespace EffectEditor
 			SetStatus("NewFile");
 		}
 
-	
-
-		#region LatestItem
-
-		readonly string HistoryPath = "history.xml";
-		readonly string ProjectTag = "ProjectHistory";
-
-		/// <summary>
-		/// 「最近使ったプロジェクト」を読み込む
-		/// </summary>
-		/// <returns></returns>
 		void LoadLatestProjects()
 		{
-			if (File.Exists(HistoryPath))
-			{
-				FileStream str = null;
-				try
+			var items = projectControl.LoadLatestProjects();
+			latestProjects.ItemsSource = items
+				.Select(i =>
 				{
-					str = File.OpenRead(HistoryPath);
-					
-					XDocument xml = XDocument.Load(str);
-					var items = xml.Root.Element(ProjectTag).Elements("item");
-					latestProjects.ItemsSource = items
-						.Select(i =>
-						{
-							var item = new MenuItem();
-							item.Click += (obj, e) => projectFileManager.Open((string)item.Header);
-							//item.Click += (obj, e) => OpenProject((string)item.Header);
-							item.Header = i.Value;
-							return item;
-						});
-				}
-				catch
-				{
-				}
-				finally
-				{
-					if (str != null)
-					{
-						str.Dispose();
-						str = null;
-					}
-				}
-			}
+					var item = new MenuItem();
+					item.Click += (obj, e) => projectControl.OpenProject((string)item.Header);
+					//item.Click += (obj, e) => OpenProject((string)item.Header);
+					item.Header = i;
+					return item;
+				});
 		}
-
-		void SaveLatestProjects(string fileName)
-		{
-			XDocument xml = null;
-
-			try
-			{
-				using (var str = File.OpenRead(HistoryPath))
-				{
-					xml = XDocument.Load(str);
-				}
-			}
-			catch
-			{
-				xml = new XDocument(new XDeclaration("1.0", "utf-8", "yes"));
-				xml.Add(new XElement("history"));
-			}
-
-			var prj = xml.Root.Element(ProjectTag);
-			if (prj == null)
-			{
-				prj = new XElement(ProjectTag);
-				xml.Root.Add(prj);
-			}
-			var old = prj.Elements("item").FirstOrDefault(i => i.Value == fileName);
-
-			if (old != null)
-			{
-				old.Remove();
-			}
-			prj.AddFirst(new XElement("item", fileName));
-
-			xml.Save(HistoryPath);
-			LoadLatestProjects();
-		}
-
 		
-
-		#endregion
-
 		public string Code { get; set; }
 
 		void timer_Tick(object sender, EventArgs e)
@@ -182,7 +111,7 @@ namespace EffectEditor
 			timer.Start();
 			if (latestProjects.Items.Count > 0)
 			{
-				projectFileManager.Open(latestProjects.Items.OfType<MenuItem>().First().Header as string);
+				projectControl.OpenProject(latestProjects.Items.OfType<MenuItem>().First().Header as string);
 			}
 		}
 
@@ -346,7 +275,7 @@ namespace EffectEditor
 			{
 				texturePathText.Text = System.IO.Path.GetFileName(dlg.FileName);
 				SetStatus("Texture Path : " + dlg.FileName);
-				SetTextureList();
+				projectControl.SetTextureList();
 			}
 		}
 
@@ -358,7 +287,7 @@ namespace EffectEditor
 				return;
 			}
 			var item = XNAControl.AddDefaultParticleItem(tex + ".png");
-			projectFileManager.Changed = true;
+			projectControl.Changed();
 			UpdatePMIDatas();
 			UpdatePMIProperty();
 			//var item = AddItem();
@@ -375,7 +304,7 @@ namespace EffectEditor
 			if (String.IsNullOrWhiteSpace(name)) return null;
 			string texture = texturePathText.Text;
 			if (String.IsNullOrWhiteSpace(texture)) return null;
-			projectFileManager.Changed = true;
+			projectControl.Changed();
 			return XNAControl.AddParticleItem(name, texture, (ushort)particleMassNumber.Value,
 				textureColor.R / 256f, textureColor.G / 256f,
 				textureColor.B / 256f, textureColor.A / 256f,
@@ -392,10 +321,10 @@ namespace EffectEditor
 			data.Layer = layerNumber.Value.HasValue ? layerNumber.Value.Value : 0;
 			data.Blend = (Masa.ParticleEngine.ParticleBlendMode)blendModeSelector.SelectedItem;
 			XNAControl.UpdateParticleItem(data.Name, itemNameText.Text, data);
-			projectFileManager.Changed = true;
+			projectControl.Changed();
 		}
 
-		void UpdatePMIDatas()
+		public void UpdatePMIDatas()
 		{
 			//int last = itemsList.SelectedIndex;
 			itemsList.ItemsSource = XNAControl.PMIDatas;
@@ -418,83 +347,35 @@ namespace EffectEditor
 
 		void newProjectClick(object sender, RoutedEventArgs e)
 		{
-			projectFileManager.New();
+			projectControl.NewProject();
 		}
 
-		void projectFileManager_Newed()
-		{
-			XNAControl.InitProject();
-			UpdatePMIDatas();
-			SetTextureList();
-			SetStatus("New Project");
-			//projectFileManager.SaveAs();
-		}
-
+		
 
 		void openProjectClick(object sender, RoutedEventArgs e)
 		{
-			projectFileManager.Open();
-		}
-
-		void OpenProject(string fileName)
-		{
-			try
-			{
-				XNAControl.OpenProject(fileName);
-				UpdatePMIDatas();
-				SetTextureList();
-				SetStatus("Project Loaded : " + fileName);
-			}
-			catch (Exception e)
-			{
-				EffectEditor.XNAControl.ShowExceptionBox(e);
-			}
-
-		}
-
-		void SaveProject(string fileName)
-		{
-			//UpdatePMIItem();
-			XNAControl.SaveProject(fileName);
-			SaveLatestProjects(fileName);
-			SetStatus("Project Saved : " + fileName);
+			projectControl.OpenProjectClick();
 		}
 
 		void saveProjectClick(object sender, RoutedEventArgs e)
 		{
-			UpdatePMIItem();
-			projectFileManager.Save();
+			projectControl.SaveProject();
 		}
 
 		void saveAsProjectClick(object sender, RoutedEventArgs e)
 		{
-			UpdatePMIItem();
-			projectFileManager.SaveAs();
+			projectControl.SaveAsProject();
 		}
 
 
 		void setTexturePathClick(object sender, RoutedEventArgs e)
 		{
-
-			var dlg = new VistaFolderBrowserDialog()
-			{
-				Description = "Select Texture Directory",
-				ShowNewFolderButton = false
-			};
-			dlg.ShowDialog();
-			XNAControl.TexturePath = dlg.SelectedPath;
-			projectFileManager.Changed = true;
+			projectControl.SetTexturePath();
 		}
 
 		void removeButtonClick(object sender, RoutedEventArgs e)
 		{
-			var item = itemsList.SelectedItem;
-			if (item != null)
-			{
-				XNAControl.RemovePartilceItem(item.ToString());
-				UpdatePMIDatas();
-				projectFileManager.Changed = true;
-			}
+			projectControl.RemoveParticleItem(itemsList.SelectedItem as Masa.ParticleEngine.PMIData);
 		}
 
 		#endregion
@@ -541,7 +422,7 @@ namespace EffectEditor
 				GC.Collect();
 			}
 			catch { }
-			SetTextureList();
+			projectControl.SetTextureList();
 		}
 
 		void UpdatePMIProperty()
@@ -551,21 +432,8 @@ namespace EffectEditor
 			UpdatePMIProperty(pmi);
 		}
 
-		public void SetTextureList()
-		{
-			try
-			{
-				textureList.ItemsSource = System.IO.Directory.EnumerateFiles(XNAControl.TexturePath)
-					.Select(i => System.IO.Path.GetFileNameWithoutExtension(i));
-			}
-			catch
-			{
-				textureList.ItemsSource = new string[0];
-			}
 
-		}
-
-		void SetStatus(string txt)
+		public void SetStatus(string txt)
 		{
 			statusLabel.Content = txt;
 		}
@@ -646,7 +514,7 @@ namespace EffectEditor
 
 		private void window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			if (scriptFileManager.TryClose() && projectFileManager.TryClose())
+			if (scriptFileManager.TryClose() && projectControl.TryClose())
 			{
 				return;
 			}
@@ -659,7 +527,13 @@ namespace EffectEditor
 
 		private void textureList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
 		{
-			var image = new System.Windows.Media.Imaging.BitmapImage(new Uri(XNAControl.GetTextureFileName(textureList.SelectedItem as string + ".png")));
+			var item = textureList.SelectedItem as string;
+			if (string.IsNullOrWhiteSpace(item))
+			{
+				listTexturePreview.Source = null;
+				return;
+			}
+			var image = new System.Windows.Media.Imaging.BitmapImage(new Uri(XNAControl.GetTextureFileName(item + ".png")));
 			listTexturePreview.Source = image.Clone();
 			image = null;
 			GC.Collect();
