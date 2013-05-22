@@ -59,7 +59,7 @@ namespace EffectEditor
 
 			blendModeSelector.ItemsSource = Enum.GetValues(typeof(Masa.ParticleEngine.ParticleBlendMode));
 			System.Diagnostics.Debug.Listeners.Add(error);
-			var last = LoadLatestProjects();
+			LoadLatestProjects();
 			//if (last != null)
 			//{
 			//	projectFileManager.Open(last);
@@ -80,68 +80,69 @@ namespace EffectEditor
 			SetStatus("NewFile");
 		}
 
-		void projectFileManager_Newed()
-		{
-			SetStatus("New Project");
-		}
-
+	
 
 		#region LatestItem
 
 		readonly string HistoryPath = "history.xml";
 		readonly string ProjectTag = "ProjectHistory";
 
-		string LoadLatestProjects()
+		/// <summary>
+		/// 「最近使ったプロジェクト」を読み込む
+		/// </summary>
+		/// <returns></returns>
+		void LoadLatestProjects()
 		{
-			string ret = null;
 			if (File.Exists(HistoryPath))
 			{
+				FileStream str = null;
 				try
 				{
-					using (var str = File.OpenRead(HistoryPath))
-					{
-						XDocument xml = XDocument.Load(str);
-						var items = xml.Root.Element(ProjectTag).Elements("item");
-						latestProjects.ItemsSource = items
-							.Select(i =>
-							{
-								var item = new MenuItem();
-								item.Click += (obj, e) => projectFileManager.Open((string)item.Header);
-								//item.Click += (obj, e) => OpenProject((string)item.Header);
-								item.Header = i.Value;
-								return item;
-							});
-						var first = items.FirstOrDefault();
-						if (first != null)
+					str = File.OpenRead(HistoryPath);
+					
+					XDocument xml = XDocument.Load(str);
+					var items = xml.Root.Element(ProjectTag).Elements("item");
+					latestProjects.ItemsSource = items
+						.Select(i =>
 						{
-							ret = first.Value;
-						}
-
-					}
+							var item = new MenuItem();
+							item.Click += (obj, e) => projectFileManager.Open((string)item.Header);
+							//item.Click += (obj, e) => OpenProject((string)item.Header);
+							item.Header = i.Value;
+							return item;
+						});
 				}
 				catch
 				{
 				}
+				finally
+				{
+					if (str != null)
+					{
+						str.Dispose();
+						str = null;
+					}
+				}
 			}
-			return ret;
 		}
 
 		void SaveLatestProjects(string fileName)
 		{
-			XDocument xml;
+			XDocument xml = null;
 
-			if (File.Exists(HistoryPath))
+			try
 			{
 				using (var str = File.OpenRead(HistoryPath))
 				{
 					xml = XDocument.Load(str);
 				}
 			}
-			else
+			catch
 			{
 				xml = new XDocument(new XDeclaration("1.0", "utf-8", "yes"));
 				xml.Add(new XElement("history"));
 			}
+
 			var prj = xml.Root.Element(ProjectTag);
 			if (prj == null)
 			{
@@ -160,10 +161,7 @@ namespace EffectEditor
 			LoadLatestProjects();
 		}
 
-		public override void EndInit()
-		{
-			base.EndInit();
-		}
+		
 
 		#endregion
 
@@ -418,6 +416,21 @@ namespace EffectEditor
 
 		#region ProjectFile
 
+		void newProjectClick(object sender, RoutedEventArgs e)
+		{
+			projectFileManager.New();
+		}
+
+		void projectFileManager_Newed()
+		{
+			XNAControl.InitProject();
+			UpdatePMIDatas();
+			SetTextureList();
+			SetStatus("New Project");
+			//projectFileManager.SaveAs();
+		}
+
+
 		void openProjectClick(object sender, RoutedEventArgs e)
 		{
 			projectFileManager.Open();
@@ -545,7 +558,10 @@ namespace EffectEditor
 				textureList.ItemsSource = System.IO.Directory.EnumerateFiles(XNAControl.TexturePath)
 					.Select(i => System.IO.Path.GetFileNameWithoutExtension(i));
 			}
-			catch { }
+			catch
+			{
+				textureList.ItemsSource = new string[0];
+			}
 
 		}
 

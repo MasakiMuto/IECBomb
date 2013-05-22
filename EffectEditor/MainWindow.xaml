@@ -40,6 +40,7 @@
                           CommandTarget="{Binding ElementName=window}" />
             </MenuItem>
             <MenuItem Header="プロジェクト">
+                <MenuItem Click="newProjectClick" Header="新規プロジェクト" />
                 <MenuItem Click="openProjectClick" Header="開く" />
                 <MenuItem Click="saveAsProjectClick" Header="名前を付けて保存" />
                 <MenuItem Click="saveProjectClick" Header="上書き保存" />

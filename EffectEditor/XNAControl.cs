@@ -15,11 +15,11 @@ namespace EffectEditor
 	{
 		GraphicsDevice device;
 		Effect effect;
-		EffectProject manager;
+		EffectProject effectProject;
 
 		public IEnumerable<PMIData> PMIDatas
 		{
-			get { return manager.PMIDict.Values; }
+			get { return effectProject.PMIDict.Values; }
 		}
 
 		public XNAControl()
@@ -43,9 +43,9 @@ namespace EffectEditor
 		public void Draw()
 		{
 			if (device == null) return;
-			manager.Update();
+			effectProject.Update();
 			device.Clear(Color.Black);
-			manager.Draw();
+			effectProject.Draw();
 			device.Present();
 		}
 
@@ -96,31 +96,31 @@ namespace EffectEditor
 
 		public void ChangeSize(int width, int height)
 		{
-			var dict = manager.PMIDict;
-			var texturePath = manager.TexturePath;
+			var dict = effectProject.PMIDict;
+			var texturePath = effectProject.TexturePath;
 
 			Width = width;
 			Height = height;
 			InitDevice();
 			LoadContent();
-			manager.TexturePath = TexturePath;
+			effectProject.TexturePath = TexturePath;
 			//ReloadContent();
 			ResetParticle();
-			manager.PMIDict = dict;
-			manager.TexturePath = texturePath;
-			manager.Reset();
+			effectProject.PMIDict = dict;
+			effectProject.TexturePath = texturePath;
+			effectProject.Reset();
 		}
 
 		public string GetTextureFileName(string name)
 		{
-			return Path.Combine(manager.TexturePath, name);
+			return Path.Combine(effectProject.TexturePath, name);
 		}
 
 		void LoadContent()
 		{
 			//effect = new Effect(device, File.ReadAllBytes("particle.bin"));
 			//manager = null;
-			manager = new EffectProject(device, (s) => LoadTexture(GetTextureFileName(s)));
+			effectProject = new EffectProject(device, (s) => LoadTexture(GetTextureFileName(s)));
 			//manager.SetEffect(effect);
 			ReloadContent();
 		}
@@ -131,7 +131,7 @@ namespace EffectEditor
 		void ReloadContent()
 		{
 			effect = new Effect(device, File.ReadAllBytes("particle.bin"));
-			manager.SetEffect(effect);
+			effectProject.SetEffect(effect);
 
 		}
 
@@ -150,7 +150,7 @@ namespace EffectEditor
 			File.WriteAllText(path, lines);
 			try
 			{
-				manager.PlayEffect(path);
+				effectProject.PlayEffect(path);
 			}
 			catch (Exception e)
 			{
@@ -161,7 +161,7 @@ namespace EffectEditor
 
 		public void StopEffect()
 		{
-			manager.StopEffect();
+			effectProject.StopEffect();
 			//effectManager.ClearParticle();
 		}
 
@@ -204,7 +204,7 @@ namespace EffectEditor
 
 		public PMIData AddParticleItem(string name, string texture, ushort mass, float r, float g, float b, float a, ParticleBlendMode blend, int layer)
 		{
-			return manager.AddParticleManager(name, texture, mass, r, g, b, a, blend, layer);
+			return effectProject.AddParticleManager(name, texture, mass, r, g, b, a, blend, layer);
 		}
 
 		public PMIData AddDefaultParticleItem(string textureName)
@@ -216,34 +216,39 @@ namespace EffectEditor
 
 		public void UpdateParticleItem(string baseName, string newName, PMIData item)
 		{
-			manager.UpdateParticleManager(baseName, newName, item);
+			effectProject.UpdateParticleManager(baseName, newName, item);
 		}
 
 		public void ResetParticle()
 		{
-			if (manager != null)
-				manager.Reset();
+			if (effectProject != null)
+				effectProject.Reset();
 		}
 
 		public void RemovePartilceItem(string name)
 		{
-			manager.RemoveParticleManager(name);
+			effectProject.RemoveParticleManager(name);
 		}
 
 		public string TexturePath
 		{
-			get { return manager.TexturePath; }
-			set { manager.TexturePath = value; }
+			get { return effectProject.TexturePath; }
+			set { effectProject.TexturePath = value; }
 		}
 
 		public void SaveProject(string name)
 		{
-			manager.SaveToFile(name);
+			effectProject.SaveToFile(name);
 		}
 
 		public void OpenProject(string name)
 		{
-			manager.Load(name);
+			effectProject.Load(name);
+		}
+
+		public void InitProject()
+		{
+			LoadContent(); 
 		}
 	}
 
