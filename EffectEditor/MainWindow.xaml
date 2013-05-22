@@ -34,16 +34,14 @@
                 <MenuItem Command="ApplicationCommands.SaveAs" CommandTarget="{Binding ElementName=scriptCode}" />
                 <MenuItem Command="ApplicationCommands.Save" CommandTarget="{Binding ElementName=scriptCode}" />
                 <Separator />
-                <MenuItem x:Name="exit"
-                          Click="exit_Click"
-                          Command="ApplicationCommands.Close"
+                <MenuItem                    Command="ApplicationCommands.Close"
                           CommandTarget="{Binding ElementName=window}" />
             </MenuItem>
             <MenuItem Header="プロジェクト">
-                <MenuItem Click="newProjectClick" Header="新規プロジェクト" />
-                <MenuItem Click="openProjectClick" Header="開く" />
-                <MenuItem Click="saveAsProjectClick" Header="名前を付けて保存" />
-                <MenuItem Click="saveProjectClick" Header="上書き保存" />
+                <MenuItem Command="ApplicationCommands.New" CommandTarget="{Binding ElementName=window}" />
+                <MenuItem Command="ApplicationCommands.Open" CommandTarget="{Binding ElementName=window}"/>
+                <MenuItem Command="ApplicationCommands.SaveAs" CommandTarget="{Binding ElementName=window}" />
+                <MenuItem Command="ApplicationCommands.Save" CommandTarget="{Binding ElementName=window}" />
                 <MenuItem x:Name="latestProjects" Header="最近使ったファイル" />
                 <Separator />
                 <MenuItem Click="setTexturePathClick" Header="テクスチャパス設定" />

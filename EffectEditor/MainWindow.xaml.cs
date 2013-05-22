@@ -43,7 +43,14 @@ namespace EffectEditor
 					new CommandBinding(ApplicationCommands.SaveAs, (o,e) => scriptControl.SaveAs()),
 					new CommandBinding(ApplicationCommands.Open, (o,e) => scriptControl.OpenFile()),
 				});
-			this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Close, (o, e) => this.Close()));
+			this.CommandBindings.AddRange(new[]
+				{
+					new CommandBinding(ApplicationCommands.Close, (o, e) => this.Close()),
+					new CommandBinding(ApplicationCommands.New, (o, e) => projectControl.NewProject()),
+					new CommandBinding(ApplicationCommands.Save, (o, e) => projectControl.SaveProject()),
+					new CommandBinding(ApplicationCommands.SaveAs, (o, e) => projectControl.SaveAsProject()),
+					new CommandBinding(ApplicationCommands.Open, (o, e) => projectControl.OpenProjectClick()),
+				});
 			//XNAControl.onTextureLoaded += (s) => textureListBox.Items.Add(System.IO.Path.GetFileNameWithoutExtension(s));
 			ErrorLogger = new StringWriter();
 			var error = new System.Diagnostics.TextWriterTraceListener(ErrorLogger);
@@ -113,10 +120,6 @@ namespace EffectEditor
 
 		}
 
-		private void exit_Click(object sender, RoutedEventArgs e)
-		{
-			this.Close();
-		}
 
 
 		private void playButton_Click(object sender, RoutedEventArgs e)
@@ -261,25 +264,7 @@ namespace EffectEditor
 
 		#region ProjectFile
 
-		void newProjectClick(object sender, RoutedEventArgs e)
-		{
-			projectControl.NewProject();
-		}
-
-		void openProjectClick(object sender, RoutedEventArgs e)
-		{
-			projectControl.OpenProjectClick();
-		}
-
-		void saveProjectClick(object sender, RoutedEventArgs e)
-		{
-			projectControl.SaveProject();
-		}
-
-		void saveAsProjectClick(object sender, RoutedEventArgs e)
-		{
-			projectControl.SaveAsProject();
-		}
+	
 
 		void setTexturePathClick(object sender, RoutedEventArgs e)
 		{
