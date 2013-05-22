@@ -11,6 +11,7 @@ namespace EffectEditor
 
 		public string FileName { get; protected set; }
 		public bool Changed { get; set; }
+		public Func<bool> ChangeComparer { get; set; }//Changedまたはこれがtrue
 		readonly string DefaultExtension;
 		readonly string Filter;
 		public event Action<string> Saved;
@@ -65,7 +66,7 @@ namespace EffectEditor
 
 		public bool TryClose()
 		{
-			if (!Changed)
+			if (!IsChanged())
 			{
 				return true;
 			}
@@ -167,6 +168,11 @@ namespace EffectEditor
 			Changed = false;
 			FileName = name;
 			if (Saved != null) Saved(name);
+		}
+
+		bool IsChanged()
+		{
+			return Changed || (ChangeComparer != null && ChangeComparer());
 		}
 	}
 }

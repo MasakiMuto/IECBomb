@@ -9,19 +9,32 @@ using Ookii.Dialogs.Wpf;
 
 namespace EffectEditor
 {
+	using PMIDict = Dictionary<string, PMIData>;
+
 	class ProjectControl
 	{
 		MainWindow window;
 		XNAControl XnaControl { get { return window.XNAControl; } }
 		FileManager projectFileManager;
+		PMIDict lastState;
 
 		public ProjectControl(MainWindow window)
 		{
 			this.window = window;
 			projectFileManager = new FileManager(".efprj", "Masa Effect Project|*.efprj|All Files|*.*");
-			projectFileManager.Newed += new Action(projectFileManager_Newed);
+			projectFileManager.Newed += projectFileManager_Newed;
 			projectFileManager.Opened += ProjectOpened;
 			projectFileManager.Saved += SaveProject;
+			projectFileManager.ChangeComparer = () => lastState != null && !lastState.SequenceEqual(GetCurrentParticleItems(), p=>p.Value);
+		}
+
+		PMIDict GetCurrentParticleItems()
+		{
+			if (XnaControl.EffectProject == null)
+			{
+				return null;
+			}
+			return XnaControl.EffectProject.PMIDict;
 		}
 
 		public void OpenProject(string name)
@@ -34,11 +47,7 @@ namespace EffectEditor
 			projectFileManager.Changed = true;
 		}
 
-		public void ChangeCommited()
-		{
-			projectFileManager.Changed = false;
-		}
-
+		
 		public void NewProject()
 		{
 			projectFileManager.New();
@@ -84,12 +93,29 @@ namespace EffectEditor
 			Changed();
 		}
 
+		void SetLastState()
+		{
+			var cur = GetCurrentParticleItems();
+			if (cur == null)
+			{
+				lastState = null;
+				return;
+			}
+			lastState = new PMIDict(cur.Count);
+			foreach (var item in cur)
+			{
+				lastState[item.Key] = item.Value.Clone();
+			}
+			//lastState = new PMIDict(GetCurrentParticleItems());
+		}
+
 		void projectFileManager_Newed()
 		{
 			XnaControl.InitProject();
 			UpdatePMIDatas();
 			SetTextureList();
 			window.SetStatus("New Project");
+			SetLastState();
 			//projectFileManager.SaveAs();
 		}
 
@@ -101,6 +127,7 @@ namespace EffectEditor
 				UpdatePMIDatas();
 				SetTextureList();
 				window.SetStatus("Project Loaded : " + fileName);
+				SetLastState();
 			}
 			catch (Exception e)
 			{
@@ -115,6 +142,7 @@ namespace EffectEditor
 			XnaControl.SaveProject(fileName);
 			SaveLatestProjects(fileName);
 			window.SetStatus("Project Saved : " + fileName);
+			SetLastState();
 		}
 
 		void UpdatePMIDatas()

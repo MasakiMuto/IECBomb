@@ -19,7 +19,7 @@ namespace EffectEditor
 		Vector2 generatePosition;
 		Effect effect;
 		TextureFunc textureGetFunction;
-		internal Dictionary<string, PMIData> PMIDict;
+		internal Dictionary<string, PMIData> PMIDict { get; set; }
 		readonly Random rand;
 		public static bool Is2D { get; set; }
 

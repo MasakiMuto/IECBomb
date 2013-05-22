@@ -259,7 +259,7 @@ namespace EffectEditor
 			data.Layer = layerNumber.Value.HasValue ? layerNumber.Value.Value : 0;
 			data.Blend = (Masa.ParticleEngine.ParticleBlendMode)blendModeSelector.SelectedItem;
 			XNAControl.UpdateParticleItem(data.Name, itemNameText.Text, data);
-			projectControl.Changed();
+			//projectControl.Changed();
 		}
 
 		void UpdateCurrentParticleItemValues()
