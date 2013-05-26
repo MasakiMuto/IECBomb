@@ -109,7 +109,8 @@ namespace EffectEditor
 			XNAControl.Window = this;
 			//new System.Windows.Interop.HwndSource(
 			itemsList.ItemsSource = XNAControl.PMIDatas;
-			
+			XNAControl.EffectProject.OnScriptPathChanged = UpdateScriptList;
+
 			timer.Start();
 			if (latestProjects.Items.Count > 0)
 			{
@@ -142,13 +143,44 @@ namespace EffectEditor
 			XNAControl.ResetParticle();
 		}
 
+		#region ScriptFile
+
 		private void scriptCode_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			SetStatus("Ready...");
 			//scriptControl.Changed();
 			//changed = true;
 		}
-		
+
+		private void scriptCode_Drop(object sender, DragEventArgs e)
+		{
+			string[] files = e.Data.GetData(DataFormats.FileDrop) as string[];
+			if (files != null)
+			{
+				scriptControl.OpenFile(files[0]);
+				//LoadScript(files[0]);
+			}
+		}
+
+		private void scriptCode_PreviewDragOver(object sender, DragEventArgs e)
+		{
+			e.Handled = e.Data.GetDataPresent(DataFormats.FileDrop);
+		}
+
+		void UpdateScriptList(string dir)
+		{
+			scriptFileList.ItemsSource = Directory.EnumerateFiles(Masa.Lib.Utility.ConvertAbsolutePath(ProjectFileDirectory, dir), "*.mss")
+				.Select(i => Path.GetFileNameWithoutExtension(i));
+			
+		}
+
+		void ScriptFileItemDoubleClicked(object sender, MouseEventArgs e)
+		{
+
+		}
+
+		#endregion
+
 		#region ScriptFormat
 
 		private void scriptCode_KeyDown(object sender, KeyEventArgs e)
@@ -376,6 +408,7 @@ namespace EffectEditor
 			statusLabel.Content = txt;
 		}
 
+		#region ColorConvert
 
 		Color FromXColor(Microsoft.Xna.Framework.Vector4 col)
 		{
@@ -394,20 +427,7 @@ namespace EffectEditor
 			return new Microsoft.Xna.Framework.Color(col.R, col.G, col.B, col.A);
 		}
 
-		private void scriptCode_Drop(object sender, DragEventArgs e)
-		{
-			string[] files = e.Data.GetData(DataFormats.FileDrop) as string[];
-			if (files != null)
-			{
-				scriptControl.OpenFile(files[0]);
-				//LoadScript(files[0]);
-			}
-		}
-
-		private void scriptCode_PreviewDragOver(object sender, DragEventArgs e)
-		{
-			e.Handled = e.Data.GetDataPresent(DataFormats.FileDrop);
-		}
+		#endregion
 
 		private void window_Activated(object sender, EventArgs e)
 		{
@@ -461,7 +481,6 @@ namespace EffectEditor
 			{
 				e.Cancel = true;
 			}
-
 		}
 
 		private void textureList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -476,10 +495,7 @@ namespace EffectEditor
 			listTexturePreview.Source = (image != null ? image.Clone() : null);
 			image = null;
 			GC.Collect();
-			
 		}
-
-
 
 
 	}

@@ -107,11 +107,17 @@
                                    ScrollViewer.CanContentScroll="True"
                                    ScrollViewer.VerticalScrollBarVisibility="Disabled">
                             <ListBox x:Name="scriptFileList"
-                                     VerticalAlignment="Top"
-                                     Width="100"
+                                     Width="120"
                                      DockPanel.Dock="Right"
-                                     Height="{Binding ActualHeight, ElementName=stackPanel}"
-                                     />
+                                     Height="{Binding ActualHeight, ElementName=stackPanel}">
+                                <ListBox.Resources>
+                                    <Style TargetType="{x:Type ListBoxItem}">
+                                        <EventSetter Event="MouseDoubleClick" Handler="ScriptFileItemDoubleClicked"/>
+                                    </Style>
+                                </ListBox.Resources>
+                            </ListBox>
+                                     
+                                     
 
                             <TextBox x:Name="scriptCode"
                                      Height="{Binding ActualHeight, ElementName=stackPanel}"

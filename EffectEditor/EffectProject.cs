@@ -22,14 +22,26 @@ namespace EffectEditor
 		internal Dictionary<string, PMIData> PMIDict { get; set; }
 		readonly Random rand;
 		public static bool Is2D { get; set; }
-		
+
+		public Action<string> OnScriptPathChanged { get; set; }
+		string scriptPath;
 		/// <summary>
 		/// 最後に使ったスクリプトファイルのあるディレクトリへの、プロジェクトファイルのパスを基準とした相対パス
 		/// </summary>
 		public string ScriptPath
 		{
-			get;
-			set;
+			get
+			{
+				return scriptPath;
+			}
+			set
+			{
+				scriptPath = value;
+				if (OnScriptPathChanged != null)
+				{
+					OnScriptPathChanged(scriptPath);
+				}
+			}
 		}
 
 		/// <summary>

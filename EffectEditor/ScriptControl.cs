@@ -100,6 +100,7 @@ namespace EffectEditor
 				File.WriteAllText(name, ScriptCode.Text);
 				window.SetStatus("Script Saved : " + name);
 				SetLastState();
+				UpdateProjectScriptPath(name);
 				return true;
 			}
 			catch (Exception e)
