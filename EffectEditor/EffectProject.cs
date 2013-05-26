@@ -22,6 +22,15 @@ namespace EffectEditor
 		internal Dictionary<string, PMIData> PMIDict { get; set; }
 		readonly Random rand;
 		public static bool Is2D { get; set; }
+		
+		/// <summary>
+		/// 最後に使ったスクリプトファイルのあるディレクトリへの、プロジェクトファイルのパスを基準とした相対パス
+		/// </summary>
+		public string ScriptPath
+		{
+			get;
+			set;
+		}
 
 		/// <summary>
 		/// テクスチャがあるディレクトリへのプロジェクトファイルのパスを基準とした相対パス
@@ -43,6 +52,7 @@ namespace EffectEditor
 			rand = new Random();
 			PMIDict = new Dictionary<string, PMIData>();
 			TexturePath = "";
+			ScriptPath = "";
 		}
 
 		public void SetEffect(Effect ef)
@@ -63,6 +73,8 @@ namespace EffectEditor
 			{
 				XDocument xml = XDocument.Load(str);
 				TexturePath = xml.Root.Element("texture").Value;
+				var script = xml.Root.Element("script");
+				ScriptPath = script != null ? script.Value : "";
 				PMIDict = ParticleManagerInitializerManager.LoadPMIDatas(fileName).ToDictionary(i => i.Name);
 			};
 			MakeParticleManager();
@@ -145,6 +157,7 @@ namespace EffectEditor
 			var root = xml.Root;
 
 			root.Add(new XElement("texture", TexturePath));
+			root.Add(new XElement("script", ScriptPath));
 			root.Add(PMIDict.Values.Select
 				(i => new XElement
 					(

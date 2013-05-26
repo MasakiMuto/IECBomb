@@ -84,20 +84,26 @@ namespace EffectEditor
 			};
 			if(dlg.ShowDialog() ?? false)
 			{
-				XnaControl.TexturePath = ConvertTexturePathRelative(dlg.SelectedPath);
-				Changed();
-				SetTextureList();
+				var last = XnaControl.TexturePath;
+				var cur = ConvertTexturePathRelative(dlg.SelectedPath);
+				if (cur != last)
+				{
+					XnaControl.TexturePath = cur;
+					Changed();
+					SetTextureList();
+				}
 			}
 			
 		}
 
 		string ConvertTexturePathRelative(string abs)
 		{
-			var from = new Uri(Path.GetDirectoryName(ProjectFileName) + Path.DirectorySeparatorChar);
-			var uri = new Uri(from, abs);
-			var rel = from.MakeRelativeUri(uri).ToString();
-			rel = System.Uri.UnescapeDataString(rel).Replace('/', '\\');
-			return rel;
+			return Masa.Lib.Utility.ConvertRelativePath(ProjectFileName, abs);
+			//var from = new Uri(Path.GetDirectoryName(ProjectFileName) + Path.DirectorySeparatorChar);
+			//var uri = new Uri(from, abs);
+			//var rel = from.MakeRelativeUri(uri).ToString();
+			//rel = System.Uri.UnescapeDataString(rel).Replace('/', '\\');
+			//return rel;
 			
 		}
 

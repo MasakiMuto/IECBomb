@@ -24,6 +24,7 @@ namespace EffectEditor
 			fileManager.Opened += LoadScript;
 			fileManager.Saved += s => SaveScript(s);
 			fileManager.ChangeComparer = () => ScriptCode.Text != lastText;
+			fileManager.DefaultDirectory = () => Masa.Lib.Utility.ConvertAbsolutePath(window.ProjectFileDirectory, window.XNAControl.ScriptPath);
 		}
 
 		void SetLastState()
@@ -46,7 +47,15 @@ namespace EffectEditor
 				ScriptCode.Text = File.ReadAllText(fileName);
 				window.SetStatus("Script Loaded : " + fileName);
 				SetLastState();
+				UpdateProjectScriptPath(fileName);
 			}
+		}
+
+		void UpdateProjectScriptPath(string fileName)
+		{
+			var path = Masa.Lib.Utility.ConvertRelativePath(window.ProjectFileName, Path.GetDirectoryName(fileName));
+			window.XNAControl.ScriptPath = path;
+			
 		}
 
 		public void OpenFile()

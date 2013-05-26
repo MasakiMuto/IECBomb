@@ -26,6 +26,7 @@ namespace EffectEditor
 		ProjectControl projectControl;
 		ScriptControl scriptControl;
 		public string ProjectFileName { get { return projectControl.ProjectFileName; } }
+		public string ProjectFileDirectory { get { return Path.GetDirectoryName(ProjectFileName); } }
 
 		//[System.Runtime.InteropServices.DllImport("User32.dll")]
 		//static extern IntPtr SendMessage(IntPtr hWnnd, int msg, int wParam, int[] lParam);

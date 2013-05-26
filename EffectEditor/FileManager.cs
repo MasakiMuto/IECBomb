@@ -17,11 +17,13 @@ namespace EffectEditor
 		public event Action<string> Saved;
 		public event Action<string> Opened;
 		public event Action Newed;
+		public Func<string> DefaultDirectory { get; set; }
 
 		public FileManager(string defaultExt, string filter)
 		{
 			DefaultExtension = defaultExt;
 			Filter = filter;
+			DefaultDirectory = () => "";
 		}
 
 		public void New()
@@ -133,7 +135,9 @@ namespace EffectEditor
 			{
 				AddExtension = true,
 				DefaultExt = this.DefaultExtension,
-				Filter = this.Filter
+				Filter = this.Filter,
+				InitialDirectory = DefaultDirectory()
+				
 			};
 			//if (dlg.ShowDialog() == DialogResult.OK)
 			if(dlg.ShowDialog() == true)
@@ -151,6 +155,7 @@ namespace EffectEditor
 				DefaultExt = this.DefaultExtension,
 				OverwritePrompt = true,
 				Filter = this.Filter,
+				InitialDirectory = DefaultDirectory(),
 			};
 			var res = dlg.ShowDialog();
 			if (res == true)

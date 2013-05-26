@@ -147,6 +147,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\MasaLibs\MasaLib\MasaLib.csproj">
+      <Project>{badd7c9a-bc50-46cf-882c-58d597dc8495}</Project>
+      <Name>MasaLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\MasaLibs\ParticleEngine\ParticleEngine.csproj">
       <Project>{30d007cc-761b-4df9-a4c5-14b52d76bf79}</Project>
       <Name>ParticleEngine</Name>

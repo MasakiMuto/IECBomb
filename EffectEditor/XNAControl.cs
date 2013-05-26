@@ -115,13 +115,15 @@ namespace EffectEditor
 
 		public string GetTextureFileName(string name)
 		{
-			return Path.GetFullPath( Path.Combine(Path.GetDirectoryName(Window.ProjectFileName), EffectProject.TexturePath, name));
+			return Path.Combine(GetAbsTexturePath(), name);
+			//return Path.GetFullPath( Path.Combine(Path.GetDirectoryName(Window.ProjectFileName), EffectProject.TexturePath, name));
 			//return Path.Combine(EffectProject.TexturePath, name);
 		}
 
 		public string GetAbsTexturePath()
 		{
-			return Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Window.ProjectFileName), EffectProject.TexturePath));
+			return Masa.Lib.Utility.ConvertAbsolutePath(Path.GetDirectoryName(Window.ProjectFileName), EffectProject.TexturePath);
+			//return Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Window.ProjectFileName), EffectProject.TexturePath));
 		}
 
 		void LoadContent()
@@ -242,6 +244,12 @@ namespace EffectEditor
 		{
 			get { return EffectProject.TexturePath; }
 			set { EffectProject.TexturePath = value; }
+		}
+
+		public string ScriptPath
+		{
+			get { return EffectProject.ScriptPath; }
+			set { EffectProject.ScriptPath = value; }
 		}
 
 		public void SaveProject(string name)

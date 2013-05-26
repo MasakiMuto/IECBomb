@@ -106,6 +106,13 @@
                                    VerticalAlignment="Stretch"
                                    ScrollViewer.CanContentScroll="True"
                                    ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                            <ListBox x:Name="scriptFileList"
+                                     VerticalAlignment="Top"
+                                     Width="100"
+                                     DockPanel.Dock="Right"
+                                     Height="{Binding ActualHeight, ElementName=stackPanel}"
+                                     />
+
                             <TextBox x:Name="scriptCode"
                                      Height="{Binding ActualHeight, ElementName=stackPanel}"
                                      AcceptsReturn="True"
