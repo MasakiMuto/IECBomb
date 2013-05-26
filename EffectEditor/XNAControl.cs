@@ -108,14 +108,20 @@ namespace EffectEditor
 			//ReloadContent();
 			//ResetParticle();
 			EffectProject.PMIDict = dict;
-			EffectProject.TexturePath = texturePath;
+			
+			TexturePath = texturePath;
 			EffectProject.Reset();
 		}
 
 		public string GetTextureFileName(string name)
 		{
-			//return Path.Combine(Path.GetDirectoryName(Window.ProjectFileName), EffectProject.TexturePath, name);
-			return Path.Combine(EffectProject.TexturePath, name);
+			return Path.GetFullPath( Path.Combine(Path.GetDirectoryName(Window.ProjectFileName), EffectProject.TexturePath, name));
+			//return Path.Combine(EffectProject.TexturePath, name);
+		}
+
+		public string GetAbsTexturePath()
+		{
+			return Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Window.ProjectFileName), EffectProject.TexturePath));
 		}
 
 		void LoadContent()

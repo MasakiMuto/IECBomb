@@ -79,9 +79,22 @@ namespace EffectEditor
 				Description = "Select Texture Directory",
 				ShowNewFolderButton = false
 			};
-			dlg.ShowDialog();
-			XnaControl.TexturePath = dlg.SelectedPath;
-			Changed();
+			if(dlg.ShowDialog() ?? false)
+			{
+				XnaControl.TexturePath = ConvertTexturePathRelative(dlg.SelectedPath);
+				Changed();
+			}
+			
+		}
+
+		string ConvertTexturePathRelative(string abs)
+		{
+			var from = new Uri(Path.GetDirectoryName(ProjectFileName) + Path.DirectorySeparatorChar);
+			var uri = new Uri(from, abs);
+			var rel = from.MakeRelativeUri(uri).ToString();
+			rel = System.Uri.UnescapeDataString(rel).Replace('/', '\\');
+			return rel;
+			
 		}
 
 		public void RemoveParticleItem(PMIData item)
@@ -156,7 +169,7 @@ namespace EffectEditor
 		{
 			try
 			{
-				window.textureList.ItemsSource = System.IO.Directory.EnumerateFiles(XnaControl.TexturePath)
+				window.textureList.ItemsSource = System.IO.Directory.EnumerateFiles(XnaControl.GetAbsTexturePath())
 					.Select(i => System.IO.Path.GetFileNameWithoutExtension(i));
 			}
 			catch

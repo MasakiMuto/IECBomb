@@ -24,7 +24,7 @@ namespace EffectEditor
 		public static bool Is2D { get; set; }
 
 		/// <summary>
-		/// テクスチャがあるディレクトリへの絶対パス
+		/// テクスチャがあるディレクトリへのプロジェクトファイルのパスを基準とした相対パス
 		/// </summary>
 		public string TexturePath
 		{

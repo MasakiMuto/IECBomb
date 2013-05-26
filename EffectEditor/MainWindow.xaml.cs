@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Xml.Linq;
 using Microsoft.Win32;
@@ -209,7 +210,7 @@ namespace EffectEditor
 			{
 				DefaultExt = ".png",
 				CheckPathExists = true,
-				InitialDirectory = XNAControl.TexturePath
+				InitialDirectory = XNAControl.GetAbsTexturePath()
 
 			};
 			if (dlg.ShowDialog() == true)
@@ -311,6 +312,11 @@ namespace EffectEditor
 			}
 		}
 
+		BitmapImage LoadBitmapImage(string fileName)
+		{
+			return new BitmapImage(new Uri(XNAControl.GetTextureFileName(fileName)));
+		}
+
 		void UpdateParticleItemPropertyDisplay(Masa.ParticleEngine.PMIData pmi)
 		{
 			itemNameText.Text = pmi.Name;
@@ -321,7 +327,7 @@ namespace EffectEditor
 			layerNumber.Value = pmi.Layer;
 			try
 			{
-				var image = new System.Windows.Media.Imaging.BitmapImage(new Uri(this.XNAControl.GetTextureFileName(pmi.TextureName)));
+				var image = LoadBitmapImage(pmi.TextureName);
 				(texturePreviewImage.Effect as global::ShaderEffectLibrary.MonochromeEffect).FilterColor = FromXColor(pmi.Color);
 				texturePreviewImage.Source = image.Clone();
 				image = null;
@@ -447,7 +453,7 @@ namespace EffectEditor
 				listTexturePreview.Source = null;
 				return;
 			}
-			var image = new System.Windows.Media.Imaging.BitmapImage(new Uri(XNAControl.GetTextureFileName(item + ".png")));
+			var image = LoadBitmapImage(item + ".png");
 			listTexturePreview.Source = image.Clone();
 			image = null;
 			GC.Collect();
