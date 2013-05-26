@@ -16,6 +16,7 @@ namespace EffectEditor
 		GraphicsDevice device;
 		Effect effect;
 		internal EffectProject EffectProject { get; private set; }
+		public MainWindow Window { get; set; }
 
 		public IEnumerable<PMIData> PMIDatas
 		{
@@ -103,9 +104,9 @@ namespace EffectEditor
 			Height = height;
 			InitDevice();
 			LoadContent();
-			EffectProject.TexturePath = TexturePath;
+			//EffectProject.TexturePath = TexturePath;
 			//ReloadContent();
-			ResetParticle();
+			//ResetParticle();
 			EffectProject.PMIDict = dict;
 			EffectProject.TexturePath = texturePath;
 			EffectProject.Reset();
@@ -113,6 +114,7 @@ namespace EffectEditor
 
 		public string GetTextureFileName(string name)
 		{
+			//return Path.Combine(Path.GetDirectoryName(Window.ProjectFileName), EffectProject.TexturePath, name);
 			return Path.Combine(EffectProject.TexturePath, name);
 		}
 

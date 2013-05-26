@@ -17,6 +17,8 @@ namespace EffectEditor
 		XNAControl XnaControl { get { return window.XNAControl; } }
 		FileManager projectFileManager;
 		PMIDict lastState;
+		public string ProjectFileName { get { return projectFileManager.FileName; } }
+
 
 		public ProjectControl(MainWindow window)
 		{

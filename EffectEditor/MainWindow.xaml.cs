@@ -24,6 +24,7 @@ namespace EffectEditor
 
 		ProjectControl projectControl;
 		ScriptControl scriptControl;
+		public string ProjectFileName { get { return projectControl.ProjectFileName; } }
 
 		//[System.Runtime.InteropServices.DllImport("User32.dll")]
 		//static extern IntPtr SendMessage(IntPtr hWnnd, int msg, int wParam, int[] lParam);
@@ -103,6 +104,7 @@ namespace EffectEditor
 		{
 			base.OnSourceInitialized(e);
 			WindowHandle = new System.Windows.Interop.WindowInteropHelper(this).Handle;
+			XNAControl.Window = this;
 			//new System.Windows.Interop.HwndSource(
 			itemsList.ItemsSource = XNAControl.PMIDatas;
 			
