@@ -41,6 +41,7 @@ namespace EffectEditor
 
 		public void OpenProject(string name)
 		{
+			window.UpdateCurrentParticleItemValues();
 			projectFileManager.Open(name);
 		}
 
@@ -52,11 +53,13 @@ namespace EffectEditor
 		
 		public void NewProject()
 		{
+			window.UpdateCurrentParticleItemValues();
 			projectFileManager.New();
 		}
 
 		public void OpenProjectClick()
 		{
+			window.UpdateCurrentParticleItemValues();
 			projectFileManager.Open();
 		}
 
@@ -83,6 +86,7 @@ namespace EffectEditor
 			{
 				XnaControl.TexturePath = ConvertTexturePathRelative(dlg.SelectedPath);
 				Changed();
+				SetTextureList();
 			}
 			
 		}
@@ -129,8 +133,10 @@ namespace EffectEditor
 			XnaControl.InitProject();
 			UpdatePMIDatas();
 			SetTextureList();
+			SaveProject();
 			window.SetStatus("New Project");
-			SetLastState();
+			//SetLastState();
+
 			//projectFileManager.SaveAs();
 		}
 
@@ -154,6 +160,7 @@ namespace EffectEditor
 		void SaveProject(string fileName)
 		{
 			//UpdatePMIItem();
+			window.UpdateCurrentParticleItemValues();
 			XnaControl.SaveProject(fileName);
 			SaveLatestProjects(fileName);
 			window.SetStatus("Project Saved : " + fileName);

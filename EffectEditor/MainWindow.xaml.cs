@@ -127,6 +127,7 @@ namespace EffectEditor
 
 		private void playButton_Click(object sender, RoutedEventArgs e)
 		{
+			UpdateCurrentParticleItemValues();
 			XNAControl.PlayScript(scriptCode.Text);
 		}
 
@@ -254,6 +255,10 @@ namespace EffectEditor
 				layerNumber.Value.HasValue ? layerNumber.Value.Value : 0);
 		}
 
+		/// <summary>
+		/// パーティクル辞書に現在の画面の情報を反映する
+		/// </summary>
+		/// <param name="data"></param>
 		void UpdateParticleItemValues(Masa.ParticleEngine.PMIData data)
 		{
 			data.Mass = (ushort)particleMassNumber.Value;
@@ -265,7 +270,7 @@ namespace EffectEditor
 			//projectControl.Changed();
 		}
 
-		void UpdateCurrentParticleItemValues()
+		public void UpdateCurrentParticleItemValues()
 		{
 			var item = this.itemsList.SelectedItem as Masa.ParticleEngine.PMIData;
 			if (item != null)
@@ -312,9 +317,21 @@ namespace EffectEditor
 			}
 		}
 
+		/// <summary>
+		/// 画像を読み込む、正しいファイルでなければnull
+		/// </summary>
+		/// <param name="fileName"></param>
+		/// <returns></returns>
 		BitmapImage LoadBitmapImage(string fileName)
 		{
-			return new BitmapImage(new Uri(XNAControl.GetTextureFileName(fileName)));
+			try
+			{
+				return new BitmapImage(new Uri(XNAControl.GetTextureFileName(fileName)));
+			}
+			catch
+			{
+				return null;
+			}
 		}
 
 		void UpdateParticleItemPropertyDisplay(Masa.ParticleEngine.PMIData pmi)
@@ -329,7 +346,7 @@ namespace EffectEditor
 			{
 				var image = LoadBitmapImage(pmi.TextureName);
 				(texturePreviewImage.Effect as global::ShaderEffectLibrary.MonochromeEffect).FilterColor = FromXColor(pmi.Color);
-				texturePreviewImage.Source = image.Clone();
+				texturePreviewImage.Source = (image != null ? image.Clone() : null);
 				image = null;
 				GC.Collect();
 			}
@@ -434,6 +451,7 @@ namespace EffectEditor
 
 		private void window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
+			UpdateCurrentParticleItemValues();
 			if (scriptControl.TryClose() && projectControl.TryClose())
 			{
 				return;
@@ -454,7 +472,7 @@ namespace EffectEditor
 				return;
 			}
 			var image = LoadBitmapImage(item + ".png");
-			listTexturePreview.Source = image.Clone();
+			listTexturePreview.Source = (image != null ? image.Clone() : null);
 			image = null;
 			GC.Collect();
 			
