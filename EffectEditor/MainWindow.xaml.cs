@@ -144,7 +144,7 @@ namespace EffectEditor
 		private void scriptCode_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			SetStatus("Ready...");
-			scriptControl.Changed();
+			//scriptControl.Changed();
 			//changed = true;
 		}
 		

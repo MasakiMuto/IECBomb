@@ -10,7 +10,8 @@ namespace EffectEditor
 	{
 		FileManager fileManager;
 		readonly MainWindow window;
-		string fileName;
+		string lastText = "";
+
 
 		System.Windows.Controls.TextBox ScriptCode { get { return window.scriptCode; } }
 
@@ -22,13 +23,20 @@ namespace EffectEditor
 			fileManager.Newed += new Action(scriptFileManager_Newed);
 			fileManager.Opened += LoadScript;
 			fileManager.Saved += s => SaveScript(s);
+			fileManager.ChangeComparer = () => ScriptCode.Text != lastText;
+		}
+
+		void SetLastState()
+		{
+			lastText = ScriptCode.Text;
 		}
 
 		void scriptFileManager_Newed()
 		{
 			ScriptCode.Text = "";
 			window.XNAControl.StopEffect();
-			window.SetStatus("NewFile");
+			window.SetStatus("NewScriptFile");
+			SetLastState();
 		}
 
 		void LoadScript(string fileName)
@@ -37,6 +45,7 @@ namespace EffectEditor
 			{
 				ScriptCode.Text = File.ReadAllText(fileName);
 				window.SetStatus("Script Loaded : " + fileName);
+				SetLastState();
 			}
 		}
 
@@ -53,9 +62,6 @@ namespace EffectEditor
 		public void NewFile()
 		{
 			fileManager.New();
-			ScriptCode.Text = "";
-			window.XNAControl.StopEffect();
-			window.SetStatus("NewScriptFile");
 		}
 
 		public void Save()
@@ -84,6 +90,7 @@ namespace EffectEditor
 			{
 				File.WriteAllText(name, ScriptCode.Text);
 				window.SetStatus("Script Saved : " + name);
+				SetLastState();
 				return true;
 			}
 			catch (Exception e)
