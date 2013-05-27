@@ -176,7 +176,13 @@ namespace EffectEditor
 
 		void ScriptFileItemDoubleClicked(object sender, MouseEventArgs e)
 		{
-
+			var item = sender as ListBoxItem;
+			if (item == null)
+			{
+				return;
+			}
+			var file = item.Content + ".mss";
+			scriptControl.OpenFile(Path.Combine(Masa.Lib.Utility.ConvertAbsolutePath(ProjectFileDirectory, XNAControl.ScriptPath), file));
 		}
 
 		#endregion
