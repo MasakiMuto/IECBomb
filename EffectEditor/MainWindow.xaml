@@ -161,7 +161,14 @@
                                          DockPanel.Dock="Top"
                                          IsSynchronizedWithCurrentItem="True"
                                          SelectionChanged="itemsList_SelectionChanged"
-                                         SourceUpdated="itemsList_SourceUpdated" />
+                                         SourceUpdated="itemsList_SourceUpdated">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="particleListItemClick" />
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                </ListBox>
+                               
                             </DockPanel>
                             <DockPanel DockPanel.Dock="Right" Width="120" d:LayoutOverrides="Height" >
                             	<TextBlock TextWrapping="Wrap" VerticalAlignment="Top" DockPanel.Dock="Top" Text="Texture List"/>

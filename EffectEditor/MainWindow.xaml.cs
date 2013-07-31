@@ -270,8 +270,10 @@ namespace EffectEditor
 			}
 			var item = XNAControl.AddDefaultParticleItem(tex + ".png");
 			projectControl.Changed();
-			UpdateParticleItemList();
-			UpdateParticleItemPropertyDisplay();
+			UpdateParticleItemList(); 
+			itemsList.SelectedIndex = itemsList.Items.Count - 1;
+			
+			//UpdateParticleItemPropertyDisplay();
 			//var item = AddItem();
 			//if (item != null)
 			//{
@@ -280,19 +282,19 @@ namespace EffectEditor
 			//}
 		}
 
-		Masa.ParticleEngine.PMIData AddItem()
-		{
-			string name = itemNameText.Text;
-			if (String.IsNullOrWhiteSpace(name)) return null;
-			string texture = texturePathText.Text;
-			if (String.IsNullOrWhiteSpace(texture)) return null;
-			projectControl.Changed();
-			return XNAControl.AddParticleItem(name, texture, (ushort)particleMassNumber.Value,
-				textureColor.R / 256f, textureColor.G / 256f,
-				textureColor.B / 256f, textureColor.A / 256f,
-				(Masa.ParticleEngine.ParticleBlendMode)blendModeSelector.SelectedItem,
-				layerNumber.Value.HasValue ? layerNumber.Value.Value : 0);
-		}
+		//Masa.ParticleEngine.PMIData AddItem()
+		//{
+		//	string name = itemNameText.Text;
+		//	if (String.IsNullOrWhiteSpace(name)) return null;
+		//	string texture = texturePathText.Text;
+		//	if (String.IsNullOrWhiteSpace(texture)) return null;
+		//	projectControl.Changed();
+		//	return XNAControl.AddParticleItem(name, texture, (ushort)particleMassNumber.Value,
+		//		textureColor.R / 256f, textureColor.G / 256f,
+		//		textureColor.B / 256f, textureColor.A / 256f,
+		//		(Masa.ParticleEngine.ParticleBlendMode)blendModeSelector.SelectedItem,
+		//		layerNumber.Value.HasValue ? layerNumber.Value.Value : 0);
+		//}
 
 		/// <summary>
 		/// パーティクル辞書に現在の画面の情報を反映する
@@ -324,11 +326,22 @@ namespace EffectEditor
 			//int last = itemsList.SelectedIndex;
 			itemsList.ItemsSource = XNAControl.PMIDatas;
 			itemsList.Items.Refresh();
+			UpdateParticleItemPropertyDisplay();
 			//itemsList.SelectedIndex = last;
 			//UpdatePMIPropery();
 			//itemsList.Items.Refresh();
 		}
 
+		private void particleListItemClick(object sender, MouseButtonEventArgs e)
+		{
+			var item = (sender as ListBoxItem);
+			if (item != null && item.Content == itemsList.SelectedItem)
+			{
+				UpdateParticleItemValues(item.Content as Masa.ParticleEngine.PMIData);
+				UpdateParticleItemList();
+			}
+			
+		}
 		
 
 		private void itemsList_SourceUpdated(object sender, DataTransferEventArgs e)
@@ -396,10 +409,25 @@ namespace EffectEditor
 			projectControl.SetTextureList();
 		}
 
+		void ClearParticleItemPropertyDisplay()
+		{
+			itemNameText.Text = "";
+			texturePathText.Text = "";
+			textureColor.SelectedColor = Colors.White;
+			layerNumber.Value = 0;
+			blendModeSelector.SelectedItem = Masa.ParticleEngine.ParticleBlendMode.Add;
+			texturePreviewImage.Source = null;
+			projectControl.SetTextureList();
+		}
+
 		void UpdateParticleItemPropertyDisplay()
 		{
 			var pmi = itemsList.SelectedItem as Masa.ParticleEngine.PMIData;
-			if (pmi == null) return;
+			if (pmi == null)
+			{
+				ClearParticleItemPropertyDisplay();
+				return;
+			}
 			UpdateParticleItemPropertyDisplay(pmi);
 		}
 
