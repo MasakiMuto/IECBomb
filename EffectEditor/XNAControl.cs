@@ -44,7 +44,16 @@ namespace EffectEditor
 		public void Draw()
 		{
 			if (device == null) return;
-			EffectProject.Update();
+			try
+			{
+				EffectProject.Update();
+			}
+			catch(Exception e)
+			{
+				ShowExceptionBox(e);
+				StopEffect();
+				return;
+			}
 			device.Clear(Color.Black);
 			EffectProject.Draw();
 			device.Present();
