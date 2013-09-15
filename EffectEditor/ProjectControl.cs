@@ -27,7 +27,7 @@ namespace EffectEditor
 			projectFileManager.Newed += projectFileManager_Newed;
 			projectFileManager.Opened += ProjectOpened;
 			projectFileManager.Saved += SaveProject;
-			projectFileManager.ChangeComparer = () => lastState != null && !lastState.SequenceEqual(GetCurrentParticleItems(), p=>p.Value);
+			projectFileManager.ChangeComparer = () => lastState != null && !lastState.SequenceEqual(GetCurrentParticleItems(), p => p.Value);
 		}
 
 		PMIDict GetCurrentParticleItems()

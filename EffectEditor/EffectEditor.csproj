@@ -77,6 +77,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AnonymousComparer.cs" />
     <Compile Include="EffectProject.cs" />
     <Compile Include="FileManager.cs" />
     <Compile Include="MonochromeEffect.cs" />
@@ -137,6 +138,7 @@
     <None Include="multi.ps">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
     <None Include="particle.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -7,3 +7,5 @@ EffectEditor/bin/Debug/
 EffectEditor/bin/Release/
 EffectEditor/build.bat
 .svn/
+packages/
+EffectEditor/AnonymousComparer.cs
