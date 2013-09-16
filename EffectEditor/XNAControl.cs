@@ -56,7 +56,20 @@ namespace EffectEditor
 			}
 			device.Clear(Color.Black);
 			EffectProject.Draw();
-			device.Present();
+			try
+			{
+				device.Present();
+			}
+			catch (DeviceLostException)
+			{
+				//device.Dispose();
+				//device = null;
+				//InitDevice();
+				//LoadContent();
+				//GC.Collect();
+				Reset();
+				GC.Collect();
+			}
 		}
 
 		protected override void OnCreateControl()
@@ -106,20 +119,24 @@ namespace EffectEditor
 
 		public void ChangeSize(int width, int height)
 		{
-			var dict = EffectProject.PMIDict;
-			var texturePath = EffectProject.TexturePath;
-
 			Width = width;
 			Height = height;
+			Reset();
+		}
+
+		void Reset()
+		{
+			var dict = EffectProject.PMIDict;
+			var texturePath = EffectProject.TexturePath;
+			var scriptPath = this.ScriptPath;
+
 			InitDevice();
 			LoadContent();
-			//EffectProject.TexturePath = TexturePath;
-			//ReloadContent();
-			//ResetParticle();
 			EffectProject.PMIDict = dict;
-			
+
 			TexturePath = texturePath;
 			EffectProject.Reset();
+			EffectProject.ScriptPath = scriptPath;
 		}
 
 		public string GetTextureFileName(string name)
