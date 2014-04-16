@@ -8,6 +8,7 @@ using Masa.ScriptEngine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TextureFunc = System.Func<string, Microsoft.Xna.Framework.Graphics.Texture2D>;
+using Masa.Lib;
 
 namespace EffectEditor
 {
@@ -87,6 +88,8 @@ namespace EffectEditor
 				TexturePath = xml.Root.Element("texture").Value;
 				var script = xml.Root.Element("script");
 				ScriptPath = script != null ? script.Value : "";
+				var is2d = xml.Root.Element("is2d");
+				Is2D = is2d != null ? is2d.BoolValue() : true;
 				PMIDict = ParticleManagerInitializerManager.LoadPMIDatas(fileName).ToDictionary(i => i.Name);
 			};
 			MakeParticleManager();
@@ -170,6 +173,7 @@ namespace EffectEditor
 
 			root.Add(new XElement("texture", TexturePath));
 			root.Add(new XElement("script", ScriptPath));
+			root.Add(new XElement("is2d", Is2D));
 			root.Add(PMIDict.Values.Select
 				(i => new XElement
 					(
@@ -221,7 +225,7 @@ namespace EffectEditor
 		{
 			Vector3 Position = Vector3.Zero;
 
-			return Matrix.CreateLookAt(Position, Position + Vector3.Forward, Vector3.Up);
+			return Matrix.CreateLookAt(Position - Vector3.Forward * 10, Position, Vector3.Up);
 			//return Matrix.CreateLookAt(Position, Target, Upper);
 		}
 

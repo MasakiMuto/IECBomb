@@ -482,11 +482,21 @@ namespace EffectEditor
 		private void is2DCheckBox_Checked(object sender, RoutedEventArgs e)
 		{
 			EffectProject.Is2D = true;
+			ResetEffectProject();
 		}
 
 		private void is2DCheckBox_Unchecked(object sender, RoutedEventArgs e)
 		{
 			EffectProject.Is2D = false;
+			ResetEffectProject();
+		}
+
+		void ResetEffectProject()
+		{
+			if (XNAControl != null && XNAControl.EffectProject != null)
+			{
+				XNAControl.EffectProject.Reset();
+			}
 		}
 
 		private void controlSizeChanged(object sender, RoutedEventArgs e)
