@@ -51,7 +51,8 @@ namespace EffectEditor
 				StopEffect();
 				return;
 			}
-			device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1, 0);
+
+			device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Util.FromWColor(Window.backgroundColor.SelectedColor), 1, 0);
 			EffectProject.Draw();
 			try
 			{

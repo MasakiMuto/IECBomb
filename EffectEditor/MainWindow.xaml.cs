@@ -304,7 +304,7 @@ namespace EffectEditor
 		{
 			data.Mass = (ushort)particleMassNumber.Value;
 			data.TextureName = texturePathText.Text;
-			data.Color = FromWColor(textureColor.SelectedColor).ToVector4();
+			data.Color = Util.FromWColor(textureColor.SelectedColor).ToVector4();
 			data.Layer = layerNumber.Value.HasValue ? layerNumber.Value.Value : 0;
 			data.Blend = (Masa.ParticleEngine.ParticleBlendMode)blendModeSelector.SelectedItem;
 			XNAControl.UpdateParticleItem(data.Name, itemNameText.Text, data);
@@ -392,12 +392,12 @@ namespace EffectEditor
 			texturePathText.Text = pmi.TextureName;
 			particleMassNumber.Value = pmi.Mass;
 			blendModeSelector.SelectedItem = pmi.Blend;
-			textureColor.SelectedColor = FromXColor(pmi.Color);
+			textureColor.SelectedColor = Util.FromXColor(pmi.Color);
 			layerNumber.Value = pmi.Layer;
 			try
 			{
 				var image = LoadBitmapImage(pmi.TextureName);
-				(texturePreviewImage.Effect as global::ShaderEffectLibrary.MonochromeEffect).FilterColor = FromXColor(pmi.Color);
+				(texturePreviewImage.Effect as global::ShaderEffectLibrary.MonochromeEffect).FilterColor = Util.FromXColor(pmi.Color);
 				texturePreviewImage.Source = (image != null ? image.Clone() : null);
 				image = null;
 				GC.Collect();
@@ -441,27 +441,6 @@ namespace EffectEditor
 		{
 			statusLabel.Content = txt;
 		}
-
-		#region ColorConvert
-
-		Color FromXColor(Microsoft.Xna.Framework.Vector4 col)
-		{
-			Func<float, byte> convert = f => (byte)(f * 255);
-			return new Color()
-			{
-				A = convert(col.W),
-				R = convert(col.X),
-				G = convert(col.Y),
-				B = convert(col.Z)
-			};
-		}
-
-		Microsoft.Xna.Framework.Color FromWColor(Color col)
-		{
-			return new Microsoft.Xna.Framework.Color(col.R, col.G, col.B, col.A);
-		}
-
-		#endregion
 
 		private void window_Activated(object sender, EventArgs e)
 		{

@@ -83,6 +83,7 @@
     <Compile Include="MonochromeEffect.cs" />
     <Compile Include="ProjectControl.cs" />
     <Compile Include="ScriptControl.cs" />
+    <Compile Include="Util.cs" />
     <Compile Include="XNAControl.cs">
       <SubType>Component</SubType>
     </Compile>

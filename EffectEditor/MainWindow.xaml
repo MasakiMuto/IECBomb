@@ -238,18 +238,19 @@
                         </DockPanel>
                     </TabItem>
                     <TabItem Header="設定">
-                        <Grid Background="#FFE5E5E5">
+                        <StackPanel Orientation="Vertical" Margin="5">
                             <CheckBox x:Name="is2DCheckBox"
-                                      Margin="26,40,0,0"
                                       HorizontalAlignment="Left"
                                       VerticalAlignment="Top"
                                       Checked="is2DCheckBox_Checked"
                                       Content="2Dパーティクルにする"
                                       IsChecked="True"
-                                      Unchecked="is2DCheckBox_Unchecked" />
-                            <StackPanel Margin="26,62,26,0"
+                                      Unchecked="is2DCheckBox_Unchecked"
+                                      Margin="0,0,0,5"/>
+                            <StackPanel
                                         VerticalAlignment="Top"
-                                        Orientation="Horizontal">
+                                        Orientation="Horizontal"
+                                        Margin="0,0,0,10">
                                 <Label Content="コントロール" />
                                 <Label Content="幅" />
                                 <ext:IntegerUpDown x:Name="controlWidth"
@@ -271,8 +272,14 @@
                                         Click="controlSizeChanged"
                                         Content="適用" />
                             </StackPanel>
+                            <Label>背景色</Label>
+                            <ext:ColorCanvas x:Name="backgroundColor"
+                                                     HexadecimalString="#000000"
+                                                     SelectedColor="Black" 
+                                             Width="300"
+                                             HorizontalAlignment="Left"/>
 
-                        </Grid>
+                        </StackPanel>
                     </TabItem>
                 </TabControl>
             </DockPanel>
