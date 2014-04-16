@@ -9,8 +9,6 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace EffectEditor
 {
-
-
 	public partial class XNAControl : Control
 	{
 		GraphicsDevice device;
@@ -31,7 +29,6 @@ namespace EffectEditor
 
 		void XNAControl_Disposed(object sender, EventArgs e)
 		{
-			//SaveTextureList();
 			DisposeDevice();
 		}
 
@@ -54,7 +51,7 @@ namespace EffectEditor
 				StopEffect();
 				return;
 			}
-			device.Clear(Color.Black);
+			device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1, 0);
 			EffectProject.Draw();
 			try
 			{
@@ -62,11 +59,6 @@ namespace EffectEditor
 			}
 			catch (DeviceLostException)
 			{
-				//device.Dispose();
-				//device = null;
-				//InitDevice();
-				//LoadContent();
-				//GC.Collect();
 				Reset();
 				GC.Collect();
 			}
@@ -108,7 +100,6 @@ namespace EffectEditor
 			try
 			{
 				device = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, GraphicsProfile.HiDef, pp);
-				//device = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, GraphicsProfile.HiDef, pp);
 			}
 			catch (Exception e)
 			{
@@ -142,22 +133,16 @@ namespace EffectEditor
 		public string GetTextureFileName(string name)
 		{
 			return Path.Combine(GetAbsTexturePath(), name);
-			//return Path.GetFullPath( Path.Combine(Path.GetDirectoryName(Window.ProjectFileName), EffectProject.TexturePath, name));
-			//return Path.Combine(EffectProject.TexturePath, name);
 		}
 
 		public string GetAbsTexturePath()
 		{
 			return Masa.Lib.Utility.ConvertAbsolutePath(Path.GetDirectoryName(Window.ProjectFileName), EffectProject.TexturePath);
-			//return Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Window.ProjectFileName), EffectProject.TexturePath));
 		}
 
 		void LoadContent()
 		{
-			//effect = new Effect(device, File.ReadAllBytes("particle.bin"));
-			//manager = null;
 			EffectProject = new EffectProject(device, (s) => LoadTexture(GetTextureFileName(s)));
-			//manager.SetEffect(effect);
 			ReloadContent();
 		}
 
@@ -168,9 +153,7 @@ namespace EffectEditor
 		{
 			effect = new Effect(device, File.ReadAllBytes("particle.bin"));
 			EffectProject.SetEffect(effect);
-
 		}
-
 
 		public static void ShowExceptionBox(Exception e)
 		{
@@ -182,7 +165,6 @@ namespace EffectEditor
 		public void PlayScript(string lines)
 		{
 			string path = Path.GetTempFileName();
-			//string key = script.PathToKey(path);
 			File.WriteAllText(path, lines);
 			try
 			{
@@ -191,21 +173,18 @@ namespace EffectEditor
 			catch (Exception e)
 			{
 				ShowExceptionBox(e);
-				//Console.WriteLine(e.Message);
 			}
 		}
 
 		public void StopEffect()
 		{
 			EffectProject.StopEffect();
-			//effectManager.ClearParticle();
 		}
 
 		private void XNAControl_Paint(object sender, PaintEventArgs e)
 		{
 			Draw();
 		}
-
 
 		Texture2D LoadTexture(string fileName)
 		{
@@ -221,10 +200,7 @@ namespace EffectEditor
 			}
 			catch (Exception)
 			{
-
-				var tex = new Texture2D(device, 1, 1);
-				tex.SetData(new[] { Color.White });
-				return tex;
+				return CreateDummyTexture();
 			}
 			finally
 			{
@@ -233,7 +209,13 @@ namespace EffectEditor
 					file.Dispose();
 				}
 			}
-			
+		}
+
+		Texture2D CreateDummyTexture()
+		{
+			var tex = new Texture2D(device, 1, 1);
+			tex.SetData(new[] { Color.White });
+			return tex;
 		}
 
 		public Action<string> onTextureLoaded;
@@ -293,22 +275,6 @@ namespace EffectEditor
 			LoadContent(); 
 		}
 	}
-
-	//public class ListTexture
-	//{
-	//	public readonly Texture2D Texture;
-	//	public readonly string Name;
-	//	public readonly string FileName;
-	//	public Color Color;
-
-	//	public ListTexture(Texture2D tex, string file)
-	//	{
-	//		Texture = tex;
-	//		Name = Path.GetFileNameWithoutExtension(file);
-	//		FileName = file;
-	//		Color = Color.White;
-	//	}
-	//}
 
 	class Handler : System.Windows.Forms.IWin32Window
 	{

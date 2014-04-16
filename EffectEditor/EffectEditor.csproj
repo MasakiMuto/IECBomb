@@ -89,9 +89,6 @@
     <Compile Include="XNAControl.Designer.cs">
       <DependentUpon>XNAControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="XNADrawer.xaml.cs">
-      <DependentUpon>XNADrawer.xaml</DependentUpon>
-    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -107,10 +104,6 @@
     <Page Include="Simple Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="XNADrawer.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
