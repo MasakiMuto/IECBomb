@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace EffectEditor
+namespace Masa.IECBomb
 {
 	public class ScriptControl
 	{

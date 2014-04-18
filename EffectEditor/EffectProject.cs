@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using TextureFunc = System.Func<string, Microsoft.Xna.Framework.Graphics.Texture2D>;
 using Masa.Lib;
 
-namespace EffectEditor
+namespace Masa.IECBomb
 {
 	internal class EffectProject
 	{

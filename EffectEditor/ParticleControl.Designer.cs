@@ -1,13 +1,13 @@
 ﻿namespace Masa.IECBomb
 {
-	partial class XNAControl
+	partial class ParticleControl
 	{
-		/// <summary>
+		/// <summary> 
 		/// 必要なデザイナー変数です。
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
+		/// <summary> 
 		/// 使用中のリソースをすべてクリーンアップします。
 		/// </summary>
 		/// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
@@ -16,28 +16,20 @@
 			if (disposing && (components != null))
 			{
 				components.Dispose();
-				effect.Dispose();
-				effect = null;
-				device.Dispose();
 			}
 			base.Dispose(disposing);
 		}
 
 		#region コンポーネント デザイナーで生成されたコード
 
-		/// <summary>
+		/// <summary> 
 		/// デザイナー サポートに必要なメソッドです。このメソッドの内容を 
 		/// コード エディターで変更しないでください。
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.SuspendLayout();
-			// 
-			// XNAControl
-			// 
-			this.Paint += new System.Windows.Forms.PaintEventHandler(this.XNAControl_Paint);
-			this.ResumeLayout(false);
-
+			components = new System.ComponentModel.Container();
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		}
 
 		#endregion

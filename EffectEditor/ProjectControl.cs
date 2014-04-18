@@ -7,7 +7,7 @@ using System.Xml.Linq;
 using Masa.ParticleEngine;
 using Ookii.Dialogs.Wpf;
 
-namespace EffectEditor
+namespace Masa.IECBomb
 {
 	using PMIDict = Dictionary<string, PMIData>;
 

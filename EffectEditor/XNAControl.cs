@@ -7,20 +7,13 @@ using Masa.ParticleEngine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace EffectEditor
+namespace Masa.IECBomb
 {
 	public partial class XNAControl : Control
 	{
 		GraphicsDevice device;
 		Effect effect;
-		internal EffectProject EffectProject { get; private set; }
-		public MainWindow Window { get; set; }
-
-		public IEnumerable<PMIData> PMIDatas
-		{
-			get { return EffectProject.PMIDict.Values; }
-		}
-
+		
 		public XNAControl()
 		{
 			InitializeComponent();
@@ -52,7 +45,7 @@ namespace EffectEditor
 				return;
 			}
 
-			device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Util.FromWColor(Window.backgroundColor.SelectedColor), 1, 0);
+			device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1, 0);
 			EffectProject.Draw();
 			try
 			{
@@ -249,27 +242,7 @@ namespace EffectEditor
 			EffectProject.RemoveParticleManager(name);
 		}
 
-		public string TexturePath
-		{
-			get { return EffectProject.TexturePath; }
-			set { EffectProject.TexturePath = value; }
-		}
-
-		public string ScriptPath
-		{
-			get { return EffectProject.ScriptPath; }
-			set { EffectProject.ScriptPath = value; }
-		}
-
-		public void SaveProject(string name)
-		{
-			EffectProject.SaveToFile(name);
-		}
-
-		public void OpenProject(string name)
-		{
-			EffectProject.Load(name);
-		}
+	
 
 		public void InitProject()
 		{

@@ -4,7 +4,7 @@ using Microsoft.Win32;
 using System.IO;
 
 
-namespace EffectEditor
+namespace Masa.IECBomb
 {
 	class FileManager
 	{

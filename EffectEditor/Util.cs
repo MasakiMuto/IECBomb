@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Media;
 
-namespace EffectEditor
+namespace Masa.IECBomb
 {
 	internal static class Util
 	{
