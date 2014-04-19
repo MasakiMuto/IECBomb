@@ -67,19 +67,22 @@ namespace Masa.IECBomb
 			particle.Update();
 		}
 
+		int count;
+
 		public void Draw()
 		{
-			Device.Clear(Color.Black);
-			//SetEffectParams();
+			count++;
+			Device.Clear(new Color(255, 0, count));
+			SetEffectParams();
 			particle.Draw();
 		}
 
 		void SetEffectParams()
 		{
 			effect.Parameters["Time"].SetValue(0);
-			effect.Parameters["FieldSize"].SetValue(new Vector2(1f / Device.Viewport.Width, 1f / Device.Viewport.Height));
+			effect.Parameters["TargetSize"].SetValue(new Vector2(1f / Device.Viewport.Width, 1f / Device.Viewport.Height));
 			effect.Parameters["Projection"].SetValue(particle.Projection);
-			effect.Parameters["View"].SetValue(Matrix.CreateLookAt(new Vector3(0, 0, 10), Vector3.Zero, Vector3.Up));
+			effect.Parameters["ViewProjection"].SetValue(Matrix.CreateLookAt(new Vector3(0, 0, 10), Vector3.Zero, Vector3.Up) * particle.Projection);
 		}
 	}
 }

@@ -19,9 +19,33 @@ namespace Masa.IECBomb
 	/// </summary>
 	public partial class IECWindow : Window
 	{
+		System.Windows.Threading.DispatcherTimer timer;
+
 		public IECWindow()
 		{
 			InitializeComponent();
+			timer = new System.Windows.Threading.DispatcherTimer()
+			{
+				Interval = new TimeSpan(167),
+			};
+			timer.Tick += timer_Tick;
+		}
+
+		void timer_Tick(object sender, EventArgs e)
+		{
+			windowsFormsHost1.InvalidateVisual();
+		}
+
+		protected override void OnSourceInitialized(EventArgs e)
+		{
+			base.OnSourceInitialized(e);
+			timer.Start();
+		}
+
+		protected override void OnClosed(EventArgs e)
+		{
+			timer.Stop();
+			base.OnClosed(e);
 		}
 	}
 }

@@ -24,13 +24,6 @@ namespace Masa.IECBomb
 			effect = new EffectManager(device);
 		}
 
-		protected override void OnClick(EventArgs e)
-		{
-			base.OnClick(e);
-			
-		
-		}
-
 		void InitDevice()
 		{
 			device = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, GraphicsProfile.HiDef, new PresentationParameters() 
