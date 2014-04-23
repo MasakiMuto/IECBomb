@@ -147,6 +147,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\MasaLibs\MasaLibXNA\MasaLibXNA.csproj">
+      <Project>{c91dc223-ed7f-4e12-b465-fba807f6817a}</Project>
+      <Name>MasaLibXNA</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\MasaLibs\MasaLib\MasaLib.csproj">
       <Project>{badd7c9a-bc50-46cf-882c-58d597dc8495}</Project>
       <Name>MasaLib</Name>

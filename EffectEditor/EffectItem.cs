@@ -20,7 +20,7 @@ namespace Masa.IECBomb
 		public class Parameter
 		{
 			public readonly float Max, Min;
-			public float NormalValue;
+			public float NormalizedValue;//0..1に正規化した値
 			public readonly ParameterName Name;
 
 			public Parameter(ParameterName name, float max, float min)
@@ -32,7 +32,7 @@ namespace Masa.IECBomb
 
 			public float GetValue()
 			{
-				return Min + (Max - Min) * NormalValue;
+				return Min + (Max - Min) * NormalizedValue;
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace Masa.IECBomb
 			var p = new EffectItem();
 			for (int i = 0; i < Enum.GetValues(typeof(ParameterName)).Length; i++)
 			{
-				p.Params[i].NormalValue = (float)rand.NextDouble();
+				p.Params[i].NormalizedValue = (float)rand.NextDouble();
 			}
 			return p;
 		}

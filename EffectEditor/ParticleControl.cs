@@ -38,15 +38,16 @@ namespace Masa.IECBomb
 			});
 		}
 
-		protected override void OnPaint(PaintEventArgs e)
+		
+		public void Draw()
 		{
-			base.OnPaint(e);
 			if (effect != null)
 			{
 				effect.Update();
 				effect.Draw();
 			}
 			device.Present();
+		
 		}
 	}
 }

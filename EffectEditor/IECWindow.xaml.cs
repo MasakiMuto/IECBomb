@@ -33,7 +33,8 @@ namespace Masa.IECBomb
 
 		void timer_Tick(object sender, EventArgs e)
 		{
-			windowsFormsHost1.InvalidateVisual();
+			ParticleControl.Draw();
+			//windowsFormsHost1.InvalidateVisual();
 		}
 
 		protected override void OnSourceInitialized(EventArgs e)
