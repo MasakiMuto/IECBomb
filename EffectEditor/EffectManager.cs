@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Masa.ParticleEngine;
 using Particle = Masa.ParticleEngine.ParticleEngine;
+using Masa.Lib.XNA;
 
 namespace Masa.IECBomb
 {
@@ -57,12 +58,12 @@ namespace Masa.IECBomb
 			{
 				particle.Make(new ParticleParameter(
 						Vector2.Zero,
-						new Vector2(),
+						MathUtilXNA.GetVector(item[ParameterName.Speed], rand.Next()),
 						new Vector2(),
 						new Vector3(1, 0, 0),
 						new Vector2(32),
 						new Vector2(),
-						Masa.Lib.XNA.HSVColor.HSVToRGB(item[ParameterName.ColorH], item[ParameterName.ColorS], item[ParameterName.ColorV])
+						HSVColor.HSVToRGB(item[ParameterName.ColorH], item[ParameterName.ColorS], item[ParameterName.ColorV])
 					));
 			}
 		}

@@ -12,6 +12,7 @@ namespace Masa.IECBomb
 		ColorH,
 		ColorS,
 		ColorV,
+		Speed,
 
 	}
 
@@ -50,12 +51,13 @@ namespace Masa.IECBomb
 
 		public EffectItem()
 		{
-			Params = new[]
+			Params = new Parameter[]
 			{
 				new Parameter(ParameterName.Mass, 1024, 1),
 				new Parameter(ParameterName.ColorH, 360, 0),
 				new Parameter(ParameterName.ColorS, 1, 0),
-				new Parameter(ParameterName.ColorV, 1, 0)
+				new Parameter(ParameterName.ColorV, 1, 0),
+				new Parameter(ParameterName.Speed, 16, 0),
 			};
 		}
 
