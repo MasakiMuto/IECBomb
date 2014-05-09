@@ -16,6 +16,8 @@ namespace Masa.IECBomb
 	/// </summary>
 	public class EffectManager
 	{
+		public static EffectManager Instance { get; private set; }
+
 		readonly GraphicsDevice Device;
 		Particle particle;
 		Random rand;
@@ -25,6 +27,7 @@ namespace Masa.IECBomb
 
 		public EffectManager(GraphicsDevice device)
 		{
+			Instance = this;
 			rand = new Random();
 			Device = device;
 			int w = device.Viewport.Width;

@@ -30,7 +30,7 @@ namespace Masa.IECBomb
 				Interval = new TimeSpan(167),
 			};
 			timer.Tick += timer_Tick;
-			manager = new Manager(ParticleControl.EffectManager);
+			manager = new Manager();
 		}
 
 		void timer_Tick(object sender, EventArgs e)

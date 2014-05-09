@@ -14,8 +14,7 @@
                               Width="400"
                               Height="480">
             <xn:ParticleControl x:Name="ParticleControl"
-                               Width="400"
-                               Height="480" />
+                                Size="400, 480" />
         </WindowsFormsHost>
         <StackPanel Orientation="Vertical" Margin="5, 5, 5, 5">
             <Button Click="PlayButtonClick">Play</Button>

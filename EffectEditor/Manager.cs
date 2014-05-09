@@ -9,17 +9,15 @@ namespace Masa.IECBomb
 	public class Manager
 	{
 		ItemPool pool;
-		EffectManager effectManager;
 
-		public Manager(EffectManager manager)
+		public Manager()
 		{
 			pool = new ItemPool(10);
-			effectManager = manager;
 		}
 
 		public void Play()
 		{
-			effectManager.Run(pool[0]);
+			EffectManager.Instance.Run(pool[0]);
 		}
 
 		public void Reset()

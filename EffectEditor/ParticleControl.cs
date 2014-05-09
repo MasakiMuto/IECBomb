@@ -20,8 +20,16 @@ namespace Masa.IECBomb
 		public ParticleControl()
 		{
 			InitializeComponent();
-			InitDevice();
-			EffectManager = new EffectManager(device);
+		}
+
+		protected override void OnCreateControl()
+		{
+			if (!DesignMode)
+			{
+				InitDevice();
+				EffectManager = new EffectManager(device);
+			}
+			base.OnCreateControl();
 		}
 
 		void InitDevice()
@@ -47,7 +55,6 @@ namespace Masa.IECBomb
 				EffectManager.Draw();
 			}
 			device.Present();
-		
 		}
 	}
 }
