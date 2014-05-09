@@ -20,6 +20,7 @@ namespace Masa.IECBomb
 	public partial class IECWindow : Window
 	{
 		System.Windows.Threading.DispatcherTimer timer;
+		Manager manager;
 
 		public IECWindow()
 		{
@@ -29,6 +30,7 @@ namespace Masa.IECBomb
 				Interval = new TimeSpan(167),
 			};
 			timer.Tick += timer_Tick;
+			manager = new Manager(ParticleControl.EffectManager);
 		}
 
 		void timer_Tick(object sender, EventArgs e)
@@ -47,6 +49,16 @@ namespace Masa.IECBomb
 		{
 			timer.Stop();
 			base.OnClosed(e);
+		}
+
+		void PlayButtonClick(object sender, EventArgs e)
+		{
+			manager.Play();
+		}
+
+		void ResetButtonClick(object sender, EventArgs e)
+		{
+			manager.Reset();
 		}
 	}
 }

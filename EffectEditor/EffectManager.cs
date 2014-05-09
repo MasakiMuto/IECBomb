@@ -11,6 +11,9 @@ using Masa.Lib.XNA;
 
 namespace Masa.IECBomb
 {
+	/// <summary>
+	/// 再生器
+	/// </summary>
 	public class EffectManager
 	{
 		readonly GraphicsDevice Device;
@@ -30,8 +33,6 @@ namespace Masa.IECBomb
 			particle = new Particle(effect, device, LoadTexture(), 4096, ParticleMode.TwoD, Matrix.CreateOrthographic(w, h, .1f, 100f), new Vector2(w, h));
 
 			view = Matrix.CreateLookAt(new Vector3(0, 0, 10), Vector3.Zero, Vector3.Up);
-
-			Run(EffectItem.RandomCreate(rand));
 		}
 
 		Effect LoadEffect()
@@ -56,15 +57,7 @@ namespace Masa.IECBomb
 			var n = (int)item[ParameterName.Mass];
 			for (int i = 0; i < n; i++)
 			{
-				particle.Make(new ParticleParameter(
-						Vector2.Zero,
-						MathUtilXNA.GetVector(item[ParameterName.Speed], rand.Next()),
-						new Vector2(),
-						new Vector3(1, 0, 0),
-						new Vector2(32),
-						new Vector2(),
-						HSVColor.HSVToRGB(item[ParameterName.ColorH], item[ParameterName.ColorS], item[ParameterName.ColorV])
-					));
+				particle.Make(item.CreateParticleParameter(rand));
 			}
 		}
 

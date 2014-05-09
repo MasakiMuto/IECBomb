@@ -14,14 +14,14 @@ namespace Masa.IECBomb
 {
 	public partial class ParticleControl : UserControl
 	{
-		EffectManager effect;
+		public EffectManager EffectManager { get; private set; }
 		GraphicsDevice device;
 
 		public ParticleControl()
 		{
 			InitializeComponent();
 			InitDevice();
-			effect = new EffectManager(device);
+			EffectManager = new EffectManager(device);
 		}
 
 		void InitDevice()
@@ -41,10 +41,10 @@ namespace Masa.IECBomb
 		
 		public void Draw()
 		{
-			if (effect != null)
+			if (EffectManager != null)
 			{
-				effect.Update();
-				effect.Draw();
+				EffectManager.Update();
+				EffectManager.Draw();
 			}
 			device.Present();
 		

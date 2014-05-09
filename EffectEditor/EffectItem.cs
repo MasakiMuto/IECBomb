@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Masa.Lib.XNA;
+using Microsoft.Xna.Framework;
 
 namespace Masa.IECBomb
 {
@@ -16,6 +18,9 @@ namespace Masa.IECBomb
 
 	}
 
+	/// <summary>
+	/// 個体
+	/// </summary>
 	public class EffectItem
 	{
 		public class Parameter
@@ -64,6 +69,19 @@ namespace Masa.IECBomb
 		public float this[ParameterName name]
 		{
 			get { return Params[(int)name].GetValue(); }
+		}
+
+		public Masa.ParticleEngine.ParticleParameter CreateParticleParameter(Random rand)
+		{
+			return new ParticleEngine.ParticleParameter(
+				Vector2.Zero,
+				MathUtilXNA.GetVector(this[ParameterName.Speed], rand.Next()),
+				Vector2.Zero,
+				new Vector3(1, 0, 0),
+				new Vector2(32),
+				Vector2.Zero,
+				HSVColor.HSVToRGB(this[ParameterName.ColorH], this[ParameterName.ColorS], this[ParameterName.ColorV])
+				);
 		}
 
 	}
