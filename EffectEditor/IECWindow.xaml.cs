@@ -31,6 +31,13 @@ namespace Masa.IECBomb
 			};
 			timer.Tick += timer_Tick;
 			manager = new Manager();
+			RedirectOutput();
+		}
+
+		void RedirectOutput()
+		{
+			System.Diagnostics.Debug.AutoFlush = true;
+			System.Diagnostics.Debug.Listeners.Add(new System.Diagnostics.TextWriterTraceListener("log.txt"));
 		}
 
 		void timer_Tick(object sender, EventArgs e)
@@ -67,6 +74,8 @@ namespace Masa.IECBomb
 			ItemPool.Pool.UpdateGeneration();
 			Generation.Content = ItemPool.Pool.Generation;
 			MaxScore.Content = ItemPool.Pool.GetMaxScore();
+			//Console.WriteLine(MaxScore.Content);
+			System.Diagnostics.Debug.WriteLine(MaxScore.Content);
 		}
 	}
 }
