@@ -82,6 +82,12 @@ namespace Masa.IECBomb
 			particle.Draw(view);
 		}
 
+		public void Clear()
+		{
+			particle.Clear();
+			count = 0;
+		}
+
 		void SetEffectParams()
 		{
 			effect.Parameters["Offset"].SetValue(new Vector2(Device.Viewport.Width, Device.Viewport.Height) * .5f);

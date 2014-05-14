@@ -59,6 +59,7 @@ namespace Masa.IECBomb
 		void ResetButtonClick(object sender, EventArgs e)
 		{
 			manager.Reset();
+			ParticleControl.EffectManager.Clear();
 		}
 	}
 }

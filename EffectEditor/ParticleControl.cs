@@ -56,5 +56,7 @@ namespace Masa.IECBomb
 			}
 			device.Present();
 		}
+
+		
 	}
 }
