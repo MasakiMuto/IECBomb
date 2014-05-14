@@ -9,10 +9,12 @@ namespace Masa.IECBomb
 	public class Manager
 	{
 		ItemPool pool;
+		EvalManager eval;
 
 		public Manager()
 		{
 			pool = new ItemPool(10);
+			eval = new EvalManager();
 		}
 
 		public void Play()

@@ -68,7 +68,7 @@ namespace Masa.IECBomb
 			return p;
 		}
 
-		public EffectItem()
+		private EffectItem()
 		{
 			Params = new Parameter[]
 			{
@@ -124,6 +124,61 @@ namespace Masa.IECBomb
 		{
 			return (float)rand.NextNormal(this[average], this[variance]);
 		}
+
+		/// <summary>
+		/// 完全なクローンを返す
+		/// </summary>
+		/// <returns></returns>
+		public EffectItem Clone()
+		{
+			var item = new EffectItem();
+			for (int i = 0; i < Params.Length; i++)
+			{
+				item.Params[i].NormalizedValue = Params[i].NormalizedValue;
+			}
+			return item;
+		}
+
+		/// <summary>
+		/// 1つのランダムなパラメタをランダムに変異させたクローンを返す
+		/// </summary>
+		/// <returns></returns>
+		public EffectItem Mutate(Random rand)
+		{
+			var clone = Clone();
+			clone.Params[rand.Next(Params.Length)].NormalizedValue = (float)rand.NextDouble();
+			return clone;
+		}
+
+		/// <summary>
+		/// 自分ともう一つの親から1点交叉で2つの子を作る
+		/// </summary>
+		/// <param name="rand"></param>
+		/// <param name="item1"></param>
+		/// <param name="item2"></param>
+		/// <returns></returns>
+		public EffectItem[] CrossOver(Random rand, EffectItem item2)
+		{
+			var child1 = new EffectItem();
+			var child2 = new EffectItem();
+			int index = rand.Next(Params.Length);
+			for (int i = 0; i < Params.Length; i++)
+			{
+				if (index < i)
+				{
+					child1.Params[i].NormalizedValue = Params[i].NormalizedValue;
+					child2.Params[i].NormalizedValue = item2.Params[i].NormalizedValue;
+				}
+				else
+				{
+					child1.Params[i].NormalizedValue = item2.Params[i].NormalizedValue;
+					child2.Params[i].NormalizedValue = Params[i].NormalizedValue;
+				}
+			}
+			return new EffectItem[] { child1, child2 };
+		}
+
+
 
 	}
 }

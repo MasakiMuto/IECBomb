@@ -85,6 +85,7 @@
     <Compile Include="EffectProject.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="EvalManager.cs" />
     <Compile Include="IECWindow.xaml.cs">
       <DependentUpon>IECWindow.xaml</DependentUpon>
     </Compile>

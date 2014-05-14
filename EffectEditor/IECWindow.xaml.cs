@@ -61,5 +61,12 @@ namespace Masa.IECBomb
 			manager.Reset();
 			ParticleControl.EffectManager.Clear();
 		}
+
+		void UpdateButtonClick(object sender, EventArgs e)
+		{
+			ItemPool.Pool.UpdateGeneration();
+			Generation.Content = ItemPool.Pool.Generation;
+			MaxScore.Content = ItemPool.Pool.GetMaxScore();
+		}
 	}
 }

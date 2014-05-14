@@ -18,7 +18,10 @@
         </WindowsFormsHost>
         <StackPanel Orientation="Vertical" Margin="5, 5, 5, 5">
             <Button Click="PlayButtonClick">Play</Button>
+            <Button Click="UpdateButtonClick">Update</Button>
             <Button Click="ResetButtonClick">Reset</Button>
+            <Label Name="Generation" />
+            <Label Name="MaxScore" />
         </StackPanel>
     </StackPanel>
 </Window>
