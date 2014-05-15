@@ -78,7 +78,7 @@ namespace Masa.IECBomb
 
 		EffectItem RandomSelect()
 		{
-			float value = (float)rand.NextDouble();
+			float value = (float)rand.NextDouble() * scores.Sum();
 			float s = 0;
 			for (int i = 0; i < PoolSize; i++)
 			{
