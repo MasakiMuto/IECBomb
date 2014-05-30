@@ -99,11 +99,11 @@ namespace Masa.IECBomb
 			get { return Params[(int)name].GetValue(); }
 		}
 
-		public Masa.ParticleEngine.ParticleParameter CreateParticleParameter(Random rand)
+		public Masa.ParticleEngine.ParticleParameter CreateParticleParameter(Random rand, Vector2 pos)
 		{
 			var v = MathUtilXNA.GetVector(NormalVariance(rand, ParameterName.Speed, ParameterName.SpeedVar), rand.Next());
 			return new ParticleEngine.ParticleParameter(
-				Vector2.Zero,
+				pos,
 				v,
 				v * NormalVariance(rand, ParameterName.Accel, ParameterName.AccelVar),
 				new Vector3(NormalVariance(rand, ParameterName.Alpha, ParameterName.AlphaVar), NormalVariance(rand, ParameterName.AlphaVel, ParameterName.AlphaVelVar), NormalVariance(rand, ParameterName.AlphaAccel, ParameterName.AlphaAccelVar)),
@@ -151,7 +151,7 @@ namespace Masa.IECBomb
 		}
 
 		/// <summary>
-		/// 自分ともう一つの親から1点交叉で2つの子を作る
+		/// 自分ともう一つの親から2点交叉で2つの子を作る
 		/// </summary>
 		/// <param name="rand"></param>
 		/// <param name="item1"></param>
@@ -161,10 +161,12 @@ namespace Masa.IECBomb
 		{
 			var child1 = new EffectItem();
 			var child2 = new EffectItem();
-			int index = rand.Next(Params.Length);
+			int i1, i2;
+			CreateCrossIndexs(rand, out i1, out i2);
+
 			for (int i = 0; i < Params.Length; i++)
 			{
-				if (index < i)
+				if (i1 <= i && i < i2)
 				{
 					child1.Params[i].NormalizedValue = Params[i].NormalizedValue;
 					child2.Params[i].NormalizedValue = item2.Params[i].NormalizedValue;
@@ -178,7 +180,34 @@ namespace Masa.IECBomb
 			return new EffectItem[] { child1, child2 };
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="rand"></param>
+		/// <param name="val1">小さい方</param>
+		/// <param name="val2">大きい方</param>
+		void CreateCrossIndexs(Random rand, out int val1, out int val2)
+		{
+			int tmp1 = rand.Next(Params.Length);
+			int tmp2 = rand.Next(Params.Length);
+			val1 = Math.Min(tmp1, tmp2);
+			val2 = Math.Max(tmp1, tmp2);
+		}
 
+		/// <summary>
+		/// 項目間類似度
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns>19..-19</returns>
+		public float Dot(EffectItem item)
+		{
+			float s = 0;
+			for (int i = 0; i < Params.Length; i++)
+			{
+				s += Params[i].NormalizedValue * item.Params[i].NormalizedValue;
+			}
+			return s;
+		}
 
 	}
 }

@@ -55,12 +55,12 @@ namespace Masa.IECBomb
 			}
 		}
 
-		public void Run(EffectItem item)
+		public void Run(EffectItem item, int pos)
 		{
 			var n = (int)item[ParameterName.Mass];
 			for (int i = 0; i < n; i++)
 			{
-				particle.Make(item.CreateParticleParameter(rand));
+				particle.Make(item.CreateParticleParameter(rand, new Vector2(pos == 0 ? -270 : 270, 0)));
 			}
 		}
 

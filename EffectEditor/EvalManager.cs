@@ -13,9 +13,24 @@ namespace Masa.IECBomb
 	{
 		public static EvalManager Instance { get; private set; }
 
+		struct ItemScore
+		{
+			public readonly EffectItem Item;
+			public readonly int Score;
+			
+			public ItemScore(EffectItem item, int score)
+			{
+				Item = item;
+				Score = score;
+			}
+		}
+
+		List<ItemScore> scoredItems;
+
 		public EvalManager()
 		{
 			Instance = this;
+			scoredItems = new List<ItemScore>();
 		}
 
 		/// <summary>
@@ -26,6 +41,11 @@ namespace Masa.IECBomb
 		public float Eval(EffectItem item)
 		{
 			return item.Params.Sum(x => x.NormalizedValue);
+		}
+
+		public void RegistScore(EffectItem item, int score)
+		{
+			scoredItems.Add(new ItemScore(item, score));
 		}
 	}
 }

@@ -19,7 +19,8 @@ namespace Masa.IECBomb
 
 		public void Play()
 		{
-			EffectManager.Instance.Run(pool[0]);
+			EffectManager.Instance.Run(pool[0], 0);
+			EffectManager.Instance.Run(pool[1], 1);
 		}
 
 		public void Reset()
