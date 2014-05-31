@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MoreLinq;
 
 namespace Masa.IECBomb
 {
@@ -40,7 +41,38 @@ namespace Masa.IECBomb
 		/// <returns></returns>
 		public float Eval(EffectItem item)
 		{
-			return item.Params.Sum(x => x.NormalizedValue);
+			ItemScore? neaerst = GetNearest(item);
+			const float Threadshold = 10;
+			const float DefaultScore = 0.5f;
+			const float Max = 19;
+			if (!neaerst.HasValue)
+			{
+				return DefaultScore;
+			}
+			float near = item.Dot(neaerst.Value.Item);
+			if (near < Threadshold)
+			{
+				return DefaultScore;
+			}
+			return DefaultScore + (neaerst.Value.Score - DefaultScore) * (near - Threadshold) / (Max - Threadshold);
+			//return item.Params.Sum(x => x.NormalizedValue);
+		}
+
+		ItemScore? GetNearest(EffectItem item)
+		{
+			ItemScore? ret = null;
+			float max = float.MinValue;
+			float tmp;
+			foreach (var i in scoredItems)
+			{
+				tmp = item.Dot(i.Item);
+				if (tmp > max)
+				{
+					max = tmp;
+					ret = i;
+				}
+			}
+			return ret;
 		}
 
 		public void RegistScore(EffectItem item, int score)
