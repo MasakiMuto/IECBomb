@@ -11,7 +11,7 @@ namespace Masa.IECBomb
 		ItemPool pool;
 		EvalManager eval;
 		int leftIndex, rightIndex;
-		const int PoolSize = 10;
+		const int PoolSize = 20;
 		Random rand;
 
 		public Manager()

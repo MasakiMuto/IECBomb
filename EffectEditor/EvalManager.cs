@@ -42,7 +42,7 @@ namespace Masa.IECBomb
 		public float Eval(EffectItem item)
 		{
 			ItemScore? neaerst = GetNearest(item);
-			const float Threadshold = 10;
+			const float Threadshold = 3;
 			const float DefaultScore = 0.5f;
 			const float Max = 19;
 			if (!neaerst.HasValue)
