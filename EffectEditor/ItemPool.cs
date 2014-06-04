@@ -10,14 +10,14 @@ namespace Masa.IECBomb
 	{
 		public static ItemPool Pool { get; private set; }
 
-		readonly int PoolSize = 10;
+		readonly int PoolSize;
 		EffectItem[] items;
 		float[] scores;
 		Random rand;
 		public int Generation { get; private set; }
 
 		readonly float CrossOverRatio = .8f;
-		readonly float MutationRatio = .05f;
+		readonly float MutationRatio = .1f;
 
 		public ItemPool(int poolSize)
 		{

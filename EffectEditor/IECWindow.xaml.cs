@@ -72,10 +72,16 @@ namespace Masa.IECBomb
 		void UpdateButtonClick(object sender, EventArgs e)
 		{
 			ItemPool.Pool.UpdateGeneration();
+			WriteLog();
+		}
+
+		void WriteLog()
+		{
 			Generation.Content = ItemPool.Pool.Generation;
 			MaxScore.Content = ItemPool.Pool.GetMaxScore();
 			//Console.WriteLine(MaxScore.Content);
 			System.Diagnostics.Debug.WriteLine(MaxScore.Content);
+		
 		}
 
 		void KeyInput(object sender, KeyEventArgs e)
@@ -99,6 +105,7 @@ namespace Masa.IECBomb
 					e.Handled = false;
 					break;
 			}
+			WriteLog();
 			
 		}
 	}

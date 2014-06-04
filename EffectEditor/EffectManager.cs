@@ -19,21 +19,31 @@ namespace Masa.IECBomb
 		public static EffectManager Instance { get; private set; }
 
 		readonly GraphicsDevice Device;
-		Particle particle;
+		Particle[] particle;
 		Random rand;
 		Effect effect;
 
 		Matrix view;
 
+		Viewport[] viewports;
+
+		readonly int Width, Height;
+
 		public EffectManager(GraphicsDevice device)
 		{
 			Instance = this;
+			Width = device.Viewport.Width / 2;
+			Height = device.Viewport.Height;
+			viewports = new[]
+				{
+					new Viewport(0, 0, Width, Height),
+					new Viewport(Width, 0, Width, Height)
+				};
 			rand = new Random();
 			Device = device;
-			int w = device.Viewport.Width;
-			int h = device.Viewport.Height;
 			effect = LoadEffect();
-			particle = new Particle(effect, device, LoadTexture(), 4096, ParticleMode.TwoD, Matrix.CreateOrthographic(w, h, .1f, 100f), new Vector2(w, h));
+			particle = Enumerable.Range(0, 2)
+				.Select(x=> new Particle(effect, device, LoadTexture(), 4096, ParticleMode.TwoD, Matrix.CreateOrthographic(Width, Height, .1f, 100f), new Vector2(Width, Height))).ToArray();
 
 			view = Matrix.CreateLookAt(new Vector3(0, 0, 10), Vector3.Zero, Vector3.Up);
 		}
@@ -60,13 +70,13 @@ namespace Masa.IECBomb
 			var n = (int)item[ParameterName.Mass];
 			for (int i = 0; i < n; i++)
 			{
-				particle.Make(item.CreateParticleParameter(rand, new Vector2(pos == 0 ? -270 : 270, 0)));
+				particle[pos].Make(item.CreateParticleParameter(rand, new Vector2(0, 0)));
 			}
 		}
 
 		public void Update()
 		{
-			particle.Update();
+			Array.ForEach(particle, x => x.Update());
 		}
 
 		int count;
@@ -79,18 +89,22 @@ namespace Masa.IECBomb
 			Device.DepthStencilState = DepthStencilState.None;
 			Device.RasterizerState = RasterizerState.CullNone;
 			Device.BlendState = BlendState.Additive;
-			particle.Draw(view);
+			for (int i = 0; i < particle.Length; i++)
+			{
+				Device.Viewport = viewports[i];
+				particle[i].Draw(view);
+			}
 		}
 
 		public void Clear()
 		{
-			particle.Clear();
+			Array.ForEach(particle, x => x.Clear());
 			count = 0;
 		}
 
 		void SetEffectParams()
 		{
-			effect.Parameters["Offset"].SetValue(new Vector2(Device.Viewport.Width, Device.Viewport.Height) * .5f);
+			effect.Parameters["Offset"].SetValue(new Vector2(Width, Height) * .5f);
 		}
 	}
 }
