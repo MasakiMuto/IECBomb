@@ -84,6 +84,11 @@ namespace Masa.IECBomb
 		
 		}
 
+		void SaveButtonClick(object sender, EventArgs e)
+		{
+			Clipboard.SetText(ItemPool.Pool[0].ToScript("item"));
+		}
+
 		void KeyInput(object sender, KeyEventArgs e)
 		{
 			e.Handled = true;

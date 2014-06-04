@@ -209,5 +209,33 @@ namespace Masa.IECBomb
 			return s;
 		}
 
+		public string ToScript(string itemName)
+		{
+			return string.Format(
+@"
+var i = {1}
+while (i > 0)
+	i --
+	{0}
+vanish
+",
+				ToMakeScript(itemName), this[ParameterName.Mass]);
+		}
+
+		string ToMakeScript(string itemName) 
+		{
+			return "make " + itemName +
+				" : r " + CreateRandNmlStatement(ParameterName.Radius, ParameterName.RadiusVar) +
+				" : vela " + CreateRandNmlStatement(ParameterName.Speed, ParameterName.SpeedVar) + "(rand : max 100)" +
+				" : acv " + CreateRandNmlStatement(ParameterName.Accel, ParameterName.AccelVar) +
+				" : alp " + CreateRandNmlStatement(ParameterName.Alpha, ParameterName.AlphaVar) + CreateRandNmlStatement(ParameterName.AlphaVel, ParameterName.AlphaVelVar) + CreateRandNmlStatement(ParameterName.AlphaAccel, ParameterName.AlphaAccelVar) +
+				" : color (hsv " + CreateRandNmlStatement(ParameterName.ColorH, ParameterName.ColorHVar) + CreateRandNmlStatement(ParameterName.ColorS, ParameterName.ColorSVar) + CreateRandNmlStatement(ParameterName.ColorV, ParameterName.ColorVVar) + ")"; 
+ 
+		}
+
+		string CreateRandNmlStatement(ParameterName avg, ParameterName var)
+		{
+			return string.Format(" (randnml {0} {1}) ", this[avg], this[var]);
+		}
 	}
 }
