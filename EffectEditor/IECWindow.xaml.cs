@@ -77,5 +77,29 @@ namespace Masa.IECBomb
 			//Console.WriteLine(MaxScore.Content);
 			System.Diagnostics.Debug.WriteLine(MaxScore.Content);
 		}
+
+		void KeyInput(object sender, KeyEventArgs e)
+		{
+			e.Handled = true;
+			switch (e.Key)
+			{
+				case Key.Up:
+					manager.Input(1, 1);
+					break;
+				case Key.Down:
+					manager.Input(0, 0);
+					break;
+				case Key.Left:
+					manager.Input(1, 0);
+					break;
+				case Key.Right:
+					manager.Input(0, 1);
+					break;
+				default:
+					e.Handled = false;
+					break;
+			}
+			
+		}
 	}
 }
