@@ -42,9 +42,9 @@ namespace Masa.IECBomb
 		public float Eval(EffectItem item)
 		{
 			ItemScore? neaerst = GetNearest(item);
-			const float Threadshold = 3;
 			const float DefaultScore = 0.5f;
-			const float Max = 19;
+			float max = Manager.Instance.ParameterCount;
+			float Threadshold = max * .3f;
 			if (!neaerst.HasValue)
 			{
 				return DefaultScore;
@@ -54,7 +54,7 @@ namespace Masa.IECBomb
 			{
 				return DefaultScore;
 			}
-			return DefaultScore + (neaerst.Value.Score - DefaultScore) * (near - Threadshold) / (Max - Threadshold);
+			return DefaultScore + (neaerst.Value.Score - DefaultScore) * (near - Threadshold) / (max - Threadshold);
 			//return item.Params.Sum(x => x.NormalizedValue);
 		}
 

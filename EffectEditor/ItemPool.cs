@@ -114,5 +114,21 @@ namespace Masa.IECBomb
 			return scores.Max();
 		}
 
+		/// <summary>
+		/// 指定の個体の特定パラメタを全個体にコピーする
+		/// </summary>
+		/// <param name="original"></param>
+		/// <param name="targets"></param>
+		public void CloneParams(EffectItem original, IEnumerable<ParameterName> targets)
+		{
+			foreach (var item in this.items)
+			{
+				foreach (int param in targets)
+				{
+					item.Params[param].NormalizedValue = original.Params[param].NormalizedValue;
+				}
+			}
+		}
+
 	}
 }

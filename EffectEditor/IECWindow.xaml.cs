@@ -113,5 +113,17 @@ namespace Masa.IECBomb
 			WriteLog();
 			
 		}
+
+		void LockButtonClick(object sender, EventArgs e)
+		{
+			var tag = (sender as Button).Tag as string;
+			foreach (var item in checkList.Children.OfType<CheckBox>())
+			{
+				manager.LockParams(item.Content as string, item.IsChecked.Value);
+			}
+			manager.LockBy(tag == "0");
+		}
+
+		
 	}
 }

@@ -99,6 +99,14 @@ namespace Masa.IECBomb
 			get { return Params[(int)name].GetValue(); }
 		}
 
+		IEnumerable<ParameterName> UnlockedParameters
+		{
+			get
+			{
+				return Manager.Instance.UnlockedParameters;
+			}
+		}
+
 		public Masa.ParticleEngine.ParticleParameter CreateParticleParameter(Random rand, Vector2 pos)
 		{
 			var v = MathUtilXNA.GetVector(NormalVariance(rand, ParameterName.Speed, ParameterName.SpeedVar), rand.Next());
@@ -146,7 +154,11 @@ namespace Masa.IECBomb
 		public EffectItem Mutate(Random rand)
 		{
 			var clone = Clone();
-			clone.Params[rand.Next(Params.Length)].NormalizedValue = (float)rand.NextDouble();
+			var item = rand.Next(Params.Length);
+			if(UnlockedParameters.Contains((ParameterName)item))
+			{
+				clone.Params[item].NormalizedValue = (float)rand.NextDouble();
+			}
 			return clone;
 		}
 
@@ -181,7 +193,7 @@ namespace Masa.IECBomb
 		}
 
 		/// <summary>
-		/// 
+		/// 交差点2つの生成
 		/// </summary>
 		/// <param name="rand"></param>
 		/// <param name="val1">小さい方</param>
@@ -202,7 +214,7 @@ namespace Masa.IECBomb
 		public float Dot(EffectItem item)
 		{
 			float s = 0;
-			for (int i = 0; i < Params.Length; i++)
+			foreach (int i in UnlockedParameters)
 			{
 				s += Params[i].NormalizedValue * item.Params[i].NormalizedValue;
 			}
