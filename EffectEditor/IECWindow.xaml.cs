@@ -106,6 +106,9 @@ namespace Masa.IECBomb
 				case Key.Right:
 					manager.Input(0, 1);
 					break;
+				case Key.Enter:
+					manager.Play();
+					break;
 				default:
 					e.Handled = false;
 					break;

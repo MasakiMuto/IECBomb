@@ -27,6 +27,7 @@ namespace Masa.IECBomb
 		}
 
 		List<ItemScore> scoredItems;
+		const float QualityWeight = .5f;
 
 		public EvalManager()
 		{
@@ -40,6 +41,11 @@ namespace Masa.IECBomb
 		/// <param name="item"></param>
 		/// <returns></returns>
 		public float Eval(EffectItem item)
+		{
+			return GetQualityScore(item) * QualityWeight + item.GetQuantityScore() * (1 - QualityWeight);
+		}
+
+		float GetQualityScore(EffectItem item)
 		{
 			ItemScore? neaerst = GetNearest(item);
 			const float DefaultScore = 0.5f;
@@ -55,7 +61,7 @@ namespace Masa.IECBomb
 				return DefaultScore;
 			}
 			return DefaultScore + (neaerst.Value.Score - DefaultScore) * (near - Threadshold) / (max - Threadshold);
-			//return item.Params.Sum(x => x.NormalizedValue);
+			
 		}
 
 		ItemScore? GetNearest(EffectItem item)

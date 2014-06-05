@@ -89,7 +89,7 @@ namespace Masa.IECBomb
 				new Parameter(ParameterName.AlphaVar, 10, 0),
 				new Parameter(ParameterName.AlphaVel, 1, -1),
 				new Parameter(ParameterName.AlphaVelVar, 1, 0),
-				new Parameter(ParameterName.AlphaAccel, 1, -1),
+				new Parameter(ParameterName.AlphaAccel, 0, -1),
 				new Parameter(ParameterName.AlphaAccelVar, 1, 0),
 			};
 		}
@@ -219,6 +219,27 @@ namespace Masa.IECBomb
 				s += Params[i].NormalizedValue * item.Params[i].NormalizedValue;
 			}
 			return s;
+		}
+
+		public float GetQuantityScore()
+		{
+			const float Max = 1f;
+			float score = Max;
+			if (!IsValidAlpha())
+			{
+				score *= .5f;
+			}
+			return score;
+		}
+
+		/// <summary>
+		/// 時間経過で消えるか
+		/// </summary>
+		/// <returns></returns>
+		bool IsValidAlpha()
+		{
+			return this[ParameterName.AlphaAccel] + this[ParameterName.AlphaAccelVar] < 0//加速度の1σが負
+				&& this[ParameterName.Alpha] - this[ParameterName.AlphaVel] * this[ParameterName.AlphaVel] / 4 / this[ParameterName.AlphaAccel] > 0;//平均でのAlpha最大値が正
 		}
 
 		public string ToScript(string itemName)
