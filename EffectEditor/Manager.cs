@@ -58,7 +58,8 @@ namespace Masa.IECBomb
 		{
 			eval.RegistScore(pool[leftIndex], left);
 			eval.RegistScore(pool[rightIndex], right);
-			pool.UpdateGeneration();
+			//pool.UpdateGeneration();
+			pool.UpdateDifferencial();
 			EffectManager.Instance.Clear();
 			Play();
 		}

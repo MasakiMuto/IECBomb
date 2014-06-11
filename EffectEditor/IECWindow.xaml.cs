@@ -71,7 +71,8 @@ namespace Masa.IECBomb
 
 		void UpdateButtonClick(object sender, EventArgs e)
 		{
-			ItemPool.Pool.UpdateGeneration();
+			//ItemPool.Pool.UpdateGeneration();
+			ItemPool.Pool.UpdateDifferencial();
 			WriteLog();
 		}
 

@@ -68,7 +68,7 @@ namespace Masa.IECBomb
 			return p;
 		}
 
-		private EffectItem()
+		public EffectItem()
 		{
 			Params = new Parameter[]
 			{
@@ -219,6 +219,17 @@ namespace Masa.IECBomb
 				s += Params[i].NormalizedValue * item.Params[i].NormalizedValue;
 			}
 			return s;
+		}
+
+		public static EffectItem CreateMutate(EffectItem baseItem, EffectItem i1, EffectItem i2, float weight)
+		{
+			var ret = new EffectItem();
+			foreach (int item in ret.UnlockedParameters)
+			{
+				var val = baseItem.Params[item].NormalizedValue + weight * (i1.Params[item].NormalizedValue - i2.Params[item].NormalizedValue);
+				ret.Params[item].NormalizedValue = MathHelper.Clamp(val, 0, 1);
+			}
+			return ret;
 		}
 
 		public float GetQuantityScore()
