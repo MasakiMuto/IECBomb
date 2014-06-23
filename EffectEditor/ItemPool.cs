@@ -176,6 +176,10 @@ namespace Masa.IECBomb
 
 		public float GetMaxScore()
 		{
+			for (int i = 0; i < scores.Length; i++)
+			{
+				scores[i] = EvalManager.Instance.Eval(items[i]);
+			}
 			return scores.Max();
 		}
 
