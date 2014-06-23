@@ -68,7 +68,7 @@ namespace Masa.IECBomb
 			return p;
 		}
 
-		private EffectItem()
+		public EffectItem()
 		{
 			Params = new Parameter[]
 			{
@@ -89,7 +89,7 @@ namespace Masa.IECBomb
 				new Parameter(ParameterName.AlphaVar, 10, 0),
 				new Parameter(ParameterName.AlphaVel, 1, -1),
 				new Parameter(ParameterName.AlphaVelVar, 1, 0),
-				new Parameter(ParameterName.AlphaAccel, 1, -1),
+				new Parameter(ParameterName.AlphaAccel, 0, -1),
 				new Parameter(ParameterName.AlphaAccelVar, 1, 0),
 			};
 		}
@@ -97,6 +97,14 @@ namespace Masa.IECBomb
 		public float this[ParameterName name]
 		{
 			get { return Params[(int)name].GetValue(); }
+		}
+
+		IEnumerable<ParameterName> UnlockedParameters
+		{
+			get
+			{
+				return Manager.Instance.UnlockedParameters;
+			}
 		}
 
 		public Masa.ParticleEngine.ParticleParameter CreateParticleParameter(Random rand, Vector2 pos)
@@ -146,7 +154,11 @@ namespace Masa.IECBomb
 		public EffectItem Mutate(Random rand)
 		{
 			var clone = Clone();
-			clone.Params[rand.Next(Params.Length)].NormalizedValue = (float)rand.NextDouble();
+			var item = rand.Next(Params.Length);
+			if(UnlockedParameters.Contains((ParameterName)item))
+			{
+				clone.Params[item].NormalizedValue = (float)rand.NextDouble();
+			}
 			return clone;
 		}
 
@@ -181,7 +193,7 @@ namespace Masa.IECBomb
 		}
 
 		/// <summary>
-		/// 
+		/// 交差点2つの生成
 		/// </summary>
 		/// <param name="rand"></param>
 		/// <param name="val1">小さい方</param>
@@ -202,11 +214,43 @@ namespace Masa.IECBomb
 		public float Dot(EffectItem item)
 		{
 			float s = 0;
-			for (int i = 0; i < Params.Length; i++)
+			foreach (int i in UnlockedParameters)
 			{
 				s += Params[i].NormalizedValue * item.Params[i].NormalizedValue;
 			}
 			return s;
+		}
+
+		public static EffectItem CreateMutate(EffectItem baseItem, EffectItem i1, EffectItem i2, float weight)
+		{
+			var ret = new EffectItem();
+			foreach (int item in ret.UnlockedParameters)
+			{
+				var val = baseItem.Params[item].NormalizedValue + weight * (i1.Params[item].NormalizedValue - i2.Params[item].NormalizedValue);
+				ret.Params[item].NormalizedValue = MathHelper.Clamp(val, 0, 1);
+			}
+			return ret;
+		}
+
+		public float GetQuantityScore()
+		{
+			const float Max = 1f;
+			float score = Max;
+			if (!IsValidAlpha())
+			{
+				score *= .5f;
+			}
+			return score;
+		}
+
+		/// <summary>
+		/// 時間経過で消えるか
+		/// </summary>
+		/// <returns></returns>
+		bool IsValidAlpha()
+		{
+			return this[ParameterName.AlphaAccel] + this[ParameterName.AlphaAccelVar] < 0//加速度の1σが負
+				&& this[ParameterName.Alpha] - this[ParameterName.AlphaVel] * this[ParameterName.AlphaVel] / 4 / this[ParameterName.AlphaAccel] > 0;//平均でのAlpha最大値が正
 		}
 
 		public string ToScript(string itemName)

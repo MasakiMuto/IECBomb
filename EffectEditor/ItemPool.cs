@@ -43,6 +43,71 @@ namespace Masa.IECBomb
 			get { return items[i]; }
 		}
 
+		public void UpdateDifferencial()
+		{
+			Generation++;
+			var next = new EffectItem[PoolSize];
+			for (int i = 0; i < PoolSize; i++)
+			{
+				var n = CreateTripleRand(i);
+				var target = EffectItem.CreateMutate(items[n[0]], items[n[1]], items[n[2]], 0.3f);
+				var child = CreateCrossOver(items[i], target);
+				if (EvalManager.Instance.Eval(child) > EvalManager.Instance.Eval(items[i]))
+				{
+					next[i] = child;
+				}
+				else
+				{
+					next[i] = items[i];
+				}
+			}
+			items = next;
+		}
+
+		EffectItem CreateCrossOver(EffectItem parent, EffectItem child)
+		{
+			var ret = new EffectItem();
+			var index = rand.Next(parent.Params.Length);
+			for (int i = 0; i < index; i++)
+			{
+				ret.Params[i].NormalizedValue = parent.Params[i].NormalizedValue;
+			}
+			ret.Params[index].NormalizedValue = child.Params[index].NormalizedValue;
+			for (int i = index + 1; i < ret.Params.Length; i++)
+			{
+				ret.Params[index].NormalizedValue = (rand.NextDouble() < CrossOverRatio ? child : parent).Params[i].NormalizedValue;
+				
+			}
+			return ret;
+		}
+
+		/// <summary>
+		/// 互いに重複しない3つの乱数
+		/// </summary>
+		/// <param name="a">除外する物</param>
+		/// <returns></returns>
+		List<int> CreateTripleRand(int a)
+		{
+			var l = new List<int>();
+			l.Add(a);
+			for (int i = 0; i < 3; i++)
+			{
+				l.Add(CreateRand(l));				
+			}
+			l.Remove(a);
+			return l;
+		}
+
+		int CreateRand(List<int> a)
+		{
+			int x;
+			do
+			{
+				x = rand.Next(PoolSize);
+			} while (a.Contains(x));
+			return x;
+		}
+
 		public void UpdateGeneration()
 		{
 			Generation++;
@@ -111,7 +176,27 @@ namespace Masa.IECBomb
 
 		public float GetMaxScore()
 		{
+			for (int i = 0; i < scores.Length; i++)
+			{
+				scores[i] = EvalManager.Instance.Eval(items[i]);
+			}
 			return scores.Max();
+		}
+
+		/// <summary>
+		/// 指定の個体の特定パラメタを全個体にコピーする
+		/// </summary>
+		/// <param name="original"></param>
+		/// <param name="targets"></param>
+		public void CloneParams(EffectItem original, IEnumerable<ParameterName> targets)
+		{
+			foreach (var item in this.items)
+			{
+				foreach (int param in targets)
+				{
+					item.Params[param].NormalizedValue = original.Params[param].NormalizedValue;
+				}
+			}
 		}
 
 	}

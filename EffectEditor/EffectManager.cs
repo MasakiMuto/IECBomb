@@ -67,6 +67,7 @@ namespace Masa.IECBomb
 
 		public void Run(EffectItem item, int pos)
 		{
+			particle[pos].Clear();
 			var n = (int)item[ParameterName.Mass];
 			for (int i = 0; i < n; i++)
 			{

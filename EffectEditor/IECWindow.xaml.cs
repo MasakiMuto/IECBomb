@@ -71,7 +71,8 @@ namespace Masa.IECBomb
 
 		void UpdateButtonClick(object sender, EventArgs e)
 		{
-			ItemPool.Pool.UpdateGeneration();
+			//ItemPool.Pool.UpdateGeneration();
+			ItemPool.Pool.UpdateDifferencial();
 			WriteLog();
 		}
 
@@ -106,6 +107,9 @@ namespace Masa.IECBomb
 				case Key.Right:
 					manager.Input(0, 1);
 					break;
+				case Key.Enter:
+					manager.Play();
+					break;
 				default:
 					e.Handled = false;
 					break;
@@ -113,5 +117,17 @@ namespace Masa.IECBomb
 			WriteLog();
 			
 		}
+
+		void LockButtonClick(object sender, EventArgs e)
+		{
+			var tag = (sender as Button).Tag as string;
+			foreach (var item in checkList.Children.OfType<CheckBox>())
+			{
+				manager.LockParams(item.Content as string, item.IsChecked.Value);
+			}
+			manager.LockBy(tag == "0");
+		}
+
+		
 	}
 }
