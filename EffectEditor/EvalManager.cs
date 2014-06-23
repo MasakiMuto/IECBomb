@@ -17,9 +17,9 @@ namespace Masa.IECBomb
 		struct ItemScore
 		{
 			public readonly EffectItem Item;
-			public readonly int Score;
+			public readonly float Score;
 			
-			public ItemScore(EffectItem item, int score)
+			public ItemScore(EffectItem item, float score)
 			{
 				Item = item;
 				Score = score;
@@ -75,9 +75,43 @@ namespace Masa.IECBomb
 			return ret;
 		}
 
-		public void RegistScore(EffectItem item, int score)
+		public void RegistScore(EffectItem item, float score)
 		{
 			scoredItems.Add(new ItemScore(item, score));
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="item1"></param>
+		/// <param name="item2"></param>
+		/// <param name="side">1が優秀=1、2が優秀=2、同じ=0</param>
+		public void RegistScore(EffectItem item1, EffectItem item2, int side)
+		{
+			const float MixRatio = .5f;//もう一方のスコアを採用する率
+			var score1 = Eval(item1);
+			var score2 = Eval(item2);
+			float tmp;
+			switch (side)
+			{
+				case 1:
+					score1 += score2 * MixRatio;
+					score2 *= 1 - MixRatio;
+					break;
+				case 2:
+					score2 += score1 * MixRatio;
+					score1 *= 1 - MixRatio;
+					break;
+				case 0:
+					tmp = score1;
+					score1 = score1 * (1 - MixRatio) + score2 * MixRatio;
+					score2 = score2 * (1 - MixRatio) + tmp * MixRatio;
+					break;
+				default:
+					throw new ArgumentException();
+			}
+			RegistScore(item1, score1);
+			RegistScore(item2, score2);
 		}
 	}
 }
