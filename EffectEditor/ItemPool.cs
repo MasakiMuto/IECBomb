@@ -35,8 +35,6 @@ namespace Masa.IECBomb
 			for (int i = 0; i < PoolSize; i++)
 			{
 				items[i] = EffectItem.RandomCreate(rand);
-				items[i].CurrentScore = EvalManager.Instance.InitialScore;
-				//EvalManager.Instance.RegistScore(items[i], items[i].CurrentScore);
 			}
 			Generation = 0;
 		}
@@ -66,7 +64,6 @@ namespace Masa.IECBomb
 				var n = CreateTripleRand(i);
 				var target = EffectItem.CreateMutate(items[n[0]], items[n[1]], items[n[2]], 0.3f);
 				var child = CreateCrossOver(items[i], target);
-				child.CurrentScore = EvalManager.Instance.Eval(child);
 				if (child.CurrentScore > items[i].CurrentScore)
 				{
 					next[i] = child;

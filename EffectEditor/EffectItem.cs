@@ -64,7 +64,13 @@ namespace Masa.IECBomb
 
 		public Parameter[] Params;
 
-		public float CurrentScore { get; set; }
+		public float CurrentScore
+		{
+			get
+			{
+				return EvalManager.Instance.Eval(this);
+			}
+		}
 
 		static int TotalIndex { get; set; }
 
@@ -243,11 +249,15 @@ namespace Masa.IECBomb
 		public float Dot(EffectItem item)
 		{
 			float s = 0;
+			float v1 = 0, v2 = 0;
 			foreach (int i in UnlockedParameters)
 			{
+				v1 += Params[i].NormalizedValue * Params[i].NormalizedValue;
+				v2 += item.Params[i].NormalizedValue * item.Params[i].NormalizedValue;
 				s += Params[i].NormalizedValue * item.Params[i].NormalizedValue;
 			}
-			return s;
+			return s / (float)Math.Sqrt(v1 * v2);
+			//return s;
 		}
 
 		/// <summary>

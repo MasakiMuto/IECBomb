@@ -44,8 +44,7 @@ namespace Masa.IECBomb
 		float GetQualityScore(EffectItem item)
 		{
 			var neaerst = GetNearest(item);
-			float max = Manager.Instance.ParameterCount;
-			float Threadshold = max * .3f;
+			float Threadshold = .3f;
 			if (!neaerst.HasValue)
 			{
 				return AverageScore;
@@ -55,7 +54,7 @@ namespace Masa.IECBomb
 			{
 				return AverageScore;
 			}
-			return AverageScore + (neaerst.Value.Value - AverageScore) * (near - Threadshold) / (max - Threadshold);
+			return AverageScore + (neaerst.Value.Value - AverageScore) * (near - Threadshold) / (1 - Threadshold);
 			
 		}
 
