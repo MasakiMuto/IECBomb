@@ -54,9 +54,21 @@ namespace Masa.IECBomb
 			{
 				return Min + (Max - Min) * NormalizedValue;
 			}
+
+			public override bool Equals(object obj)
+			{
+				var p = obj as Parameter;
+				return p != null && p.Name == this.Name && p.NormalizedValue == this.NormalizedValue;
+			}
 		}
 
 		public Parameter[] Params;
+
+		public float CurrentScore { get; set; }
+
+		static int TotalIndex { get; set; }
+
+		public readonly int Index;
 
 		public static EffectItem RandomCreate(Random rand)
 		{
@@ -68,8 +80,21 @@ namespace Masa.IECBomb
 			return p;
 		}
 
+		public override int GetHashCode()
+		{
+			return Index;
+		}
+
+		public override bool Equals(object obj)
+		{
+			var item = obj as EffectItem;
+			return item != null && (item.Index == this.Index || Params.SequenceEqual(item.Params));
+		}
+
 		public EffectItem()
 		{
+			Index = TotalIndex;
+			TotalIndex++;
 			Params = new Parameter[]
 			{
 				new Parameter(ParameterName.Mass, 1024, 1),
@@ -132,6 +157,8 @@ namespace Masa.IECBomb
 		{
 			return (float)rand.NextNormal(this[average], this[variance]);
 		}
+
+		#region Standard GA
 
 		/// <summary>
 		/// 完全なクローンを返す
@@ -206,6 +233,8 @@ namespace Masa.IECBomb
 			val2 = Math.Max(tmp1, tmp2);
 		}
 
+		#endregion
+
 		/// <summary>
 		/// 項目間類似度
 		/// </summary>
@@ -221,6 +250,14 @@ namespace Masa.IECBomb
 			return s;
 		}
 
+		/// <summary>
+		/// 差分進化での変異ベクトル生成
+		/// </summary>
+		/// <param name="baseItem"></param>
+		/// <param name="i1"></param>
+		/// <param name="i2"></param>
+		/// <param name="weight"></param>
+		/// <returns></returns>
 		public static EffectItem CreateMutate(EffectItem baseItem, EffectItem i1, EffectItem i2, float weight)
 		{
 			var ret = new EffectItem();

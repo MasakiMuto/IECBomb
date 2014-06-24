@@ -20,8 +20,8 @@ namespace Masa.IECBomb
 		public Manager()
 		{
 			Instance = this;
-			pool = new ItemPool(PoolSize);
 			eval = new EvalManager();
+			pool = new ItemPool(PoolSize);
 			rand = new Random();
 			lockList = new Dictionary<string, LockState>()
 			{
@@ -36,8 +36,11 @@ namespace Masa.IECBomb
 			};
 			UnlockedParameters = new List<ParameterName>();
 			UpdateParameterList();
+			LockParams("H", true);
+			LockParams("S", true);
+			LockParams("V", true);
 		}
-
+		
 		public void Play()
 		{
 			leftIndex = rand.Next(PoolSize);
@@ -56,8 +59,18 @@ namespace Masa.IECBomb
 
 		public void Input(int left, int right)
 		{
-			eval.RegistScore(pool[leftIndex], left);
-			eval.RegistScore(pool[rightIndex], right);
+			int side = 0;
+			if(left > right)
+			{
+				side = 1;
+			}
+			else if(leftIndex < rightIndex)
+			{
+				side = 2;
+			}
+			eval.RegistScore(pool[leftIndex], pool[rightIndex], side);
+			//eval.RegistScore(pool[leftIndex], left);
+			//eval.RegistScore(pool[rightIndex], right);
 			//pool.UpdateGeneration();
 			pool.UpdateDifferencial();
 			EffectManager.Instance.Clear();

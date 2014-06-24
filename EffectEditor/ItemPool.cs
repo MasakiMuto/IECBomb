@@ -31,11 +31,19 @@ namespace Masa.IECBomb
 
 		public void Reset()
 		{
+			EvalManager.Instance.Reset();
 			for (int i = 0; i < PoolSize; i++)
 			{
 				items[i] = EffectItem.RandomCreate(rand);
+				items[i].CurrentScore = EvalManager.Instance.InitialScore;
+				//EvalManager.Instance.RegistScore(items[i], items[i].CurrentScore);
 			}
 			Generation = 0;
+		}
+
+		void SetAverageScore()
+		{
+			EvalManager.Instance.AverageScore = items.Average(x => x.CurrentScore);
 		}
 
 		public EffectItem this[int i]
@@ -43,8 +51,12 @@ namespace Masa.IECBomb
 			get { return items[i]; }
 		}
 
+
+		#region Differencial Evolution
+
 		public void UpdateDifferencial()
 		{
+			SetAverageScore();
 			Generation++;
 			var next = new EffectItem[PoolSize];
 			for (int i = 0; i < PoolSize; i++)
@@ -52,7 +64,8 @@ namespace Masa.IECBomb
 				var n = CreateTripleRand(i);
 				var target = EffectItem.CreateMutate(items[n[0]], items[n[1]], items[n[2]], 0.3f);
 				var child = CreateCrossOver(items[i], target);
-				if (EvalManager.Instance.Eval(child) > EvalManager.Instance.Eval(items[i]))
+				child.CurrentScore = EvalManager.Instance.Eval(child);
+				if (child.CurrentScore > items[i].CurrentScore)
 				{
 					next[i] = child;
 				}
@@ -108,8 +121,13 @@ namespace Masa.IECBomb
 			return x;
 		}
 
+		#endregion
+
+		#region Standard GA
+
 		public void UpdateGeneration()
 		{
+			SetAverageScore();
 			Generation++;
 			for (int i = 0; i < PoolSize; i++)
 			{
@@ -182,6 +200,8 @@ namespace Masa.IECBomb
 			}
 			return scores.Max();
 		}
+
+		#endregion
 
 		/// <summary>
 		/// 指定の個体の特定パラメタを全個体にコピーする

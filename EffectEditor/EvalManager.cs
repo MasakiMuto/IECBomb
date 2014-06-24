@@ -27,12 +27,20 @@ namespace Masa.IECBomb
 		}
 
 		List<ItemScore> scoredItems;
-		const float QualityWeight = .5f;
+		const float QualityWeight = 1f;
+		public readonly float InitialScore = 1;
+		public float AverageScore { get; set; }
 
 		public EvalManager()
 		{
 			Instance = this;
 			scoredItems = new List<ItemScore>();
+		}
+
+		public void Reset()
+		{
+			scoredItems.Clear();
+			AverageScore = InitialScore;
 		}
 
 		/// <summary>
@@ -48,19 +56,18 @@ namespace Masa.IECBomb
 		float GetQualityScore(EffectItem item)
 		{
 			ItemScore? neaerst = GetNearest(item);
-			const float DefaultScore = 0.5f;
 			float max = Manager.Instance.ParameterCount;
 			float Threadshold = max * .3f;
 			if (!neaerst.HasValue)
 			{
-				return DefaultScore;
+				return AverageScore;
 			}
 			float near = item.Dot(neaerst.Value.Item);
 			if (near < Threadshold)
 			{
-				return DefaultScore;
+				return AverageScore;
 			}
-			return DefaultScore + (neaerst.Value.Score - DefaultScore) * (near - Threadshold) / (max - Threadshold);
+			return AverageScore + (neaerst.Value.Score - AverageScore) * (near - Threadshold) / (max - Threadshold);
 			
 		}
 
@@ -95,8 +102,8 @@ namespace Masa.IECBomb
 		public void RegistScore(EffectItem item1, EffectItem item2, int side)
 		{
 			const float MixRatio = .5f;//もう一方のスコアを採用する率
-			var score1 = Eval(item1);
-			var score2 = Eval(item2);
+			var score1 = item1.CurrentScore;
+			var score2 = item2.CurrentScore;
 			float tmp;
 			switch (side)
 			{
