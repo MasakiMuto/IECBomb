@@ -277,6 +277,10 @@ namespace Masa.IECBomb
 			{
 				score *= .5f;
 			}
+			if (!IsValidRadius())
+			{
+				score *= .5f;
+			}
 			return score;
 		}
 
@@ -289,6 +293,17 @@ namespace Masa.IECBomb
 			return this[ParameterName.AlphaAccel] + this[ParameterName.AlphaAccelVar] < 0//加速度の1σが負
 				&& this[ParameterName.Alpha] - this[ParameterName.AlphaVel] * this[ParameterName.AlphaVel] / 4 / this[ParameterName.AlphaAccel] > 0;//平均でのAlpha最大値が正
 		}
+
+		/// <summary>
+		/// 大部分の粒の半径が十分大きいか
+		/// </summary>
+		/// <returns></returns>
+		bool IsValidRadius()
+		{
+			return this[ParameterName.Radius] - this[ParameterName.RadiusVar] > 0;
+		}
+
+		#region ScriptOutput
 
 		public string ToScript(string itemName)
 		{
@@ -318,5 +333,8 @@ vanish
 		{
 			return string.Format(" (randnml {0} {1}) ", this[avg], this[var]);
 		}
+
+		#endregion
+
 	}
 }

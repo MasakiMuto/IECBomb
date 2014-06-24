@@ -14,19 +14,7 @@ namespace Masa.IECBomb
 	{
 		public static EvalManager Instance { get; private set; }
 
-		struct ItemScore
-		{
-			public readonly EffectItem Item;
-			public readonly float Score;
-			
-			public ItemScore(EffectItem item, float score)
-			{
-				Item = item;
-				Score = score;
-			}
-		}
-
-		List<ItemScore> scoredItems;
+		Dictionary<EffectItem, float> scoredItems;
 		const float QualityWeight = 1f;
 		public readonly float InitialScore = 1;
 		public float AverageScore { get; set; }
@@ -34,7 +22,7 @@ namespace Masa.IECBomb
 		public EvalManager()
 		{
 			Instance = this;
-			scoredItems = new List<ItemScore>();
+			scoredItems = new Dictionary<EffectItem, float>();
 		}
 
 		public void Reset()
@@ -55,30 +43,35 @@ namespace Masa.IECBomb
 
 		float GetQualityScore(EffectItem item)
 		{
-			ItemScore? neaerst = GetNearest(item);
+			var neaerst = GetNearest(item);
 			float max = Manager.Instance.ParameterCount;
 			float Threadshold = max * .3f;
 			if (!neaerst.HasValue)
 			{
 				return AverageScore;
 			}
-			float near = item.Dot(neaerst.Value.Item);
+			float near = item.Dot(neaerst.Value.Key);
 			if (near < Threadshold)
 			{
 				return AverageScore;
 			}
-			return AverageScore + (neaerst.Value.Score - AverageScore) * (near - Threadshold) / (max - Threadshold);
+			return AverageScore + (neaerst.Value.Value - AverageScore) * (near - Threadshold) / (max - Threadshold);
 			
 		}
 
-		ItemScore? GetNearest(EffectItem item)
+		/// <summary>
+		/// 評価済み個体のなかから最も似ている個体を探す
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns></returns>
+		KeyValuePair<EffectItem, float>? GetNearest(EffectItem item)
 		{
-			ItemScore? ret = null;
+			KeyValuePair<EffectItem, float>? ret = null;
 			float max = float.MinValue;
 			float tmp;
 			foreach (var i in scoredItems)
 			{
-				tmp = item.Dot(i.Item);
+				tmp = item.Dot(i.Key);
 				if (tmp > max)
 				{
 					max = tmp;
@@ -90,7 +83,7 @@ namespace Masa.IECBomb
 
 		public void RegistScore(EffectItem item, float score)
 		{
-			scoredItems.Add(new ItemScore(item, score));
+			scoredItems[item] = score;
 		}
 
 		/// <summary>
