@@ -83,7 +83,22 @@ namespace Masa.IECBomb
 			{
 				p.Params[i].NormalizedValue = (float)rand.NextDouble();
 			}
+			p.SetColorDefault();
 			return p;
+		}
+
+		void SetColorDefault()
+		{
+			var zeroList = new[] { ParameterName.ColorH, ParameterName.ColorHVar, ParameterName.ColorS, ParameterName.ColorSVar, ParameterName.ColorVVar };
+			var oneList = new[] { ParameterName.ColorV,  };
+			foreach (int item in zeroList)
+			{
+				Params[item].NormalizedValue = 0;
+			}
+			foreach (int item in oneList)
+			{
+				Params[item].NormalizedValue = 1;
+			}
 		}
 
 		public override int GetHashCode()
