@@ -105,8 +105,8 @@ namespace Masa.IECBomb
 		public void RegistScore(EffectItem item1, EffectItem item2, int side)
 		{
 			const float MixRatio = .5f;//もう一方のスコアを採用する率
-			var score1 = item1.CurrentScore;
-			var score2 = item2.CurrentScore;
+			var score1 = GetQualityScore(item1);
+			var score2 = GetQualityScore(item2);
 			float tmp;
 			switch (side)
 			{
