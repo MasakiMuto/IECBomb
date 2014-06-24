@@ -84,6 +84,17 @@ namespace Masa.IECBomb
 		public void RegistScore(EffectItem item, float score)
 		{
 			scoredItems[item] = score;
+			RemoveOld(item.Index);
+		}
+
+		void RemoveOld(int head)
+		{
+			const int Border = 400;
+			var removeList = scoredItems.Keys.Where(x => head - x.Index > Border).ToArray();
+			foreach (var item in removeList)
+			{
+				scoredItems.Remove(item);
+			}
 		}
 
 		/// <summary>
