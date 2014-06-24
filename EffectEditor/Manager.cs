@@ -124,5 +124,10 @@ namespace Masa.IECBomb
 		{
 			pool.CloneParams(pool[isLeft ? leftIndex : rightIndex], lockList.Values.Where(x => x.IsLocked).SelectMany(x => x.Params));
 		}
+
+		public float[] GetScoreList()
+		{
+			return pool.Items.Select(x => eval.Eval(x)).ToArray();
+		}
 	}
 }

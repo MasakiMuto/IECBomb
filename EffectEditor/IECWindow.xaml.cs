@@ -82,7 +82,7 @@ namespace Masa.IECBomb
 			MaxScore.Content = ItemPool.Pool.GetMaxScore();
 			//Console.WriteLine(MaxScore.Content);
 			System.Diagnostics.Debug.WriteLine(MaxScore.Content);
-		
+			scoreList.ItemsSource = manager.GetScoreList();
 		}
 
 		void SaveButtonClick(object sender, EventArgs e)

@@ -36,6 +36,7 @@
             <Label Name="MaxScore" />
             <Button Click="SaveButtonClick">Save</Button>
             <Button Click="ResetButtonClick">Reset</Button>
+            <ListBox Name="scoreList"/>
         </StackPanel>
     </StackPanel>
 </Window>

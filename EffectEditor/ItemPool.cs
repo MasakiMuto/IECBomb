@@ -51,6 +51,8 @@ namespace Masa.IECBomb
 			get { return items[i]; }
 		}
 
+		public EffectItem[] Items { get { return items; } }
+
 
 		#region Differencial Evolution
 
