@@ -64,7 +64,7 @@ namespace Masa.IECBomb
 			{
 				side = 1;
 			}
-			else if(leftIndex < rightIndex)
+			else if(left < right)
 			{
 				side = 2;
 			}
