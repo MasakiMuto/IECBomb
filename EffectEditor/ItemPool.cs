@@ -16,7 +16,7 @@ namespace Masa.IECBomb
 		Random rand;
 		public int Generation { get; private set; }
 
-		readonly float CrossOverRatio = .8f;
+		readonly float CrossOverRatio = .05f;
 		readonly float MutationRatio = .1f;
 
 		public ItemPool(int poolSize)
@@ -90,8 +90,7 @@ namespace Masa.IECBomb
 			ret.Params[index].NormalizedValue = child.Params[index].NormalizedValue;
 			for (int i = index + 1; i < ret.Params.Length; i++)
 			{
-				ret.Params[index].NormalizedValue = (rand.NextDouble() < CrossOverRatio ? child : parent).Params[i].NormalizedValue;
-				
+				ret.Params[i].NormalizedValue = (rand.NextDouble() < CrossOverRatio ? child : parent).Params[i].NormalizedValue;
 			}
 			return ret;
 		}
