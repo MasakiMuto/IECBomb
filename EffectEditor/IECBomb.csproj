@@ -86,11 +86,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="EvalManager.cs" />
+    <Compile Include="EvalManagerBase.cs" />
     <Compile Include="IECWindow.xaml.cs">
       <DependentUpon>IECWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ItemBase.cs" />
     <Compile Include="ItemPool.cs" />
+    <Compile Include="ItemPoolBase.cs" />
     <Compile Include="Manager.cs" />
     <Compile Include="ParticleControl.cs">
       <SubType>UserControl</SubType>

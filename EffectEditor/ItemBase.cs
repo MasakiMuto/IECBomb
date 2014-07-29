@@ -136,7 +136,7 @@ namespace Masa.IECBomb
 		/// <param name="item1"></param>
 		/// <param name="item2"></param>
 		/// <returns></returns>
-		public S[] CrossOver<S>(Random rand, EffectItem item2) where S : ItemBase<T>, new()
+		public S[] CrossOver<S>(Random rand, S item2) where S : ItemBase<T>, new()
 		{
 			var child1 = new S();
 			var child2 = new S();
@@ -199,7 +199,7 @@ namespace Masa.IECBomb
 		/// </summary>
 		/// <param name="item"></param>
 		/// <returns>19..-19</returns>
-		public float Dot(EffectItem item)
+		public float Dot<S>(S item) where S : ItemBase<T>
 		{
 			float s = 0;
 			float v1 = 0, v2 = 0;
