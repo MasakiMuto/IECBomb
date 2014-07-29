@@ -9,3 +9,5 @@ EffectEditor/build.bat
 .svn/
 packages/
 EffectEditor/AnonymousComparer.cs
+GALibrary/bin/
+GALibrary/obj/

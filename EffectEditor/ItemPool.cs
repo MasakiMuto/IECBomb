@@ -133,25 +133,25 @@ namespace Masa.IECBomb
 			}
 			var elite = items[GetMaxIndex()];
 			var next = new EffectItem[PoolSize];
-			next[0] = elite.Clone();
-			for (int i = 1; i < PoolSize; i++ )
+			//next[0] = elite.Clone();
+			for (int i = 1; i < PoolSize; i++)
 			{
 				if (rand.NextDouble() > MutationRatio)
 				{
-					next[i] = RandomSelect().Mutate(rand);
+					next[i] = RandomSelect().Mutate<EffectItem>(rand);
 				}
 				else if (i < PoolSize - 2 && rand.NextDouble() > CrossOverRatio)
 				{
 					var item1 = RandomSelect();
 					var item2 = RandomSelect();
-					var child = item1.CrossOver(rand, item2);
+					var child = item1.CrossOver<EffectItem>(rand, item2);
 					next[i] = child[0];
 					next[i + 1] = child[1];
 					i++;
 				}
 				else
 				{
-					next[i] = RandomSelect().Clone();
+					next[i] = RandomSelect().Clone<EffectItem>();
 				}
 			}
 			items = next;

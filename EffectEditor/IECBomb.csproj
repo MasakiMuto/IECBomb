@@ -89,6 +89,7 @@
     <Compile Include="IECWindow.xaml.cs">
       <DependentUpon>IECWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ItemBase.cs" />
     <Compile Include="ItemPool.cs" />
     <Compile Include="Manager.cs" />
     <Compile Include="ParticleControl.cs">
