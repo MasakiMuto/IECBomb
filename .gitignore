@@ -11,3 +11,5 @@ packages/
 EffectEditor/AnonymousComparer.cs
 GALibrary/bin/
 GALibrary/obj/
+IECSound/obj/
+IECSound/bin/

@@ -7,7 +7,7 @@ using System.IO;
 
 namespace IECSynth
 {
-	struct SynthParam
+	public struct SynthParam
 	{
 		public float base_freq;
 		public float freq_limit;
@@ -83,13 +83,20 @@ namespace IECSynth
 		float sample;
 		BinaryWriter writer;
 
-		void SynthFile(SynthParam p)
+		public void SynthFile(SynthParam p)
 		{
-			writer = new BinaryWriter(File.OpenRead("hoge.wav"));
+			writer = new BinaryWriter(File.OpenWrite("hoge.wav"));
 			long size = WriteHeader();
 			sampleCount = 0;
 			acc = 0;
 			sample = 0;
+			playing_sample = true;
+			this.p = p;
+			ResetSample(false);
+			while (playing_sample)
+			{
+				SynthSample(256);
+			}
 
 			WriteFooter(size);
 		}
@@ -189,8 +196,9 @@ namespace IECSynth
 		double arp_mod;
 
 		SynthParam p;
+		
 
-		int wave_type;
+		int wave_type = 0;
 
 		void ResetSample(bool restart)
 		{
@@ -431,13 +439,18 @@ namespace IECSynth
 			sampleCount++;
 		}
 
+		void WriteString(string s)
+		{
+			writer.Write(s.ToArray(), 0, s.Length);
+		}
+
 		long WriteHeader()
 		{
-			writer.Write("RIFF");
+			WriteString("RIFF");
 			writer.Write((uint)0);
-			writer.Write("WAVE");
+			WriteString("WAVE");
 
-			writer.Write("fmt ");
+			WriteString("fmt ");
 			writer.Write(ChunkSize);
 			writer.Write(CompressionCode);
 			writer.Write(Channels);
@@ -446,7 +459,8 @@ namespace IECSynth
 			writer.Write(BlockAlign);
 			writer.Write(Bit);
 
-			writer.Write("data");
+			WriteString("data");
+			writer.Flush();
 			var size = writer.BaseStream.Position;
 			writer.Write((uint)0);
 
@@ -455,10 +469,10 @@ namespace IECSynth
 
 		void WriteFooter(long size)
 		{
-			writer.Seek(4, SeekOrigin.Begin);
+			writer.BaseStream.Seek(4, SeekOrigin.Begin);
 			uint w = (uint)(size - 4 + sampleCount * Bit / 8);
 			writer.Write(w);
-			writer.Seek((int)size, SeekOrigin.Begin);
+			writer.BaseStream.Seek((int)size, SeekOrigin.Begin);
 			w = (uint)(sampleCount * Bit / 8);
 			writer.Write(w);
 		}
@@ -467,6 +481,7 @@ namespace IECSynth
 		{
 			if (writer != null)
 			{
+				writer.Close();
 				writer.Dispose();
 				writer = null;
 			}
