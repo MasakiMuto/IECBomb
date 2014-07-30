@@ -7,6 +7,23 @@ using System.IO;
 
 namespace IECSynth
 {
+	public enum SoundType
+	{
+		PickUp,
+		Laser,
+		Explosion,
+		Powerup,
+		Hit,
+		Jump,
+		Blip,
+
+	}
+
+	public enum WaveType
+	{
+
+	}
+
 	public struct SynthParam
 	{
 		public float base_freq;
@@ -39,6 +56,54 @@ namespace IECSynth
 
 		public float arp_speed;
 		public float arp_mod;
+
+		public WaveType wave_type;
+
+		static Random rand = new Random();
+
+		static float frnd(float max)
+		{
+			return (float)rand.NextDouble() * max;
+		}
+
+		public static SynthParam Init(SoundType type)
+		{
+			var p = new SynthParam();
+			p.base_freq = .3f;
+			p.env_sustain = .3f;
+			p.env_decay = .4f;
+			p.lpf_freq = 1f;
+			switch (type)
+			{
+				case SoundType.PickUp:
+					p.base_freq = .4f + frnd(.5f);
+					p.env_attack = 0f;
+					p.env_sustain = frnd(.1f);
+					p.env_decay = .1f + frnd(.4f);
+					p.env_punch = .3f + frnd(.3f);
+					if (true)
+					{
+						p.arp_speed = .5f + frnd(.2f);
+						p.arp_mod = .2f + frnd(.4f);
+					}
+					break;
+				case SoundType.Laser:
+					break;
+				case SoundType.Explosion:
+					break;
+				case SoundType.Powerup:
+					break;
+				case SoundType.Hit:
+					break;
+				case SoundType.Jump:
+					break;
+				case SoundType.Blip:
+					break;
+				default:
+					break;
+			}
+			return p;
+		}
 
 		//public float AttackTime, SustainTime, SustainPunch, DecayTime;//env_***
 
@@ -83,9 +148,10 @@ namespace IECSynth
 		float sample;
 		BinaryWriter writer;
 
-		public void SynthFile(SynthParam p)
+		public System.Media.SoundPlayer SynthFile(SynthParam p)
 		{
-			writer = new BinaryWriter(File.OpenWrite("hoge.wav"));
+			var path = Path.GetTempFileName();
+			writer = new BinaryWriter(File.OpenWrite(path));
 			long size = WriteHeader();
 			sampleCount = 0;
 			acc = 0;
@@ -99,60 +165,9 @@ namespace IECSynth
 			}
 
 			WriteFooter(size);
+			writer.Close();
+			return new System.Media.SoundPlayer(path);
 		}
-
-		//double fperiod;
-		//double phase;
-		//double period;
-		//double fmaxPeriod;
-		//double fslide;
-		//double fdslide;
-		//double squareDuty;
-		//double squareSlide;
-
-		//int arpTime;
-		//int arpLimit;
-		//double arpMod;
-
-
-		//void ResetSample(SynthParam p, bool restart)
-		//{
-		//	if (!restart)
-		//	{
-		//		phase = 0;
-		//	}
-		//	fperiod = 100.0 / (p.StartFreq * p.StartFreq + .001);
-		//	period = (int)fperiod;
-		//	fmaxPeriod = 100.0 / (p.MinFreq * p.MinFreq + .001);
-
-		//	if (p.ChangeAmount >= 0f)
-		//	{
-		//		arpMod = 1 - Math.Pow(p.ChangeAmount, 2) * .9;
-		//	}
-		//	else
-		//	{
-		//		arpMod = 1 + Math.Pow(p.ChangeAmount, 2) * 10;
-		//	}
-		//	arpLimit = (int)(Math.Pow(1f - p.ChangeSpeed, 2) * 20000 + 32);
-
-		//}
-
-		//void Synth(SynthParam p)
-		//{
-		//	bool playing = true;
-
-
-
-		//	while (playing)
-		//	{
-		//		arpTime++;
-		//		if (arpLimit != 0 && arpTime >= arpLimit)
-		//		{
-		//			arpLimit = 0;
-		//			fperiod *= arpMod;
-		//		}
-		//	}
-		//}
 
 		float master_vol = 0.05f;
 

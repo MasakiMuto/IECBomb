@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Media;
 
 namespace IECSound
 {
@@ -23,18 +24,12 @@ namespace IECSound
 		public MainWindow()
 		{
 			InitializeComponent();
-			var p = new IECSynth.SynthParam();
-			p.base_freq = 0.4f;
-			p.env_attack = 0f;
-			p.env_sustain = .05f;
-			p.env_decay = .2f;
-			p.env_punch = .4f;
-
-			p.lpf_freq = 1f;
+			var p = IECSynth.SynthParam.Init(IECSynth.SoundType.PickUp);
 
 			using(var s = new IECSynth.SynthEngine())
 			{
-				s.SynthFile(p);
+				var player = s.SynthFile(p);
+				player.Play();
 			}
 			
 			
