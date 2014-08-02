@@ -21,7 +21,10 @@ namespace IECSynth
 
 	public enum WaveType
 	{
-
+		Square,
+		Saw,
+		Sine,
+		Noise
 	}
 
 	public struct SynthParam
@@ -73,6 +76,7 @@ namespace IECSynth
 			p.env_sustain = .3f;
 			p.env_decay = .4f;
 			p.lpf_freq = 1f;
+			p.wave_type = WaveType.Square;
 			switch (type)
 			{
 				case SoundType.PickUp:
@@ -88,16 +92,148 @@ namespace IECSynth
 					}
 					break;
 				case SoundType.Laser:
+					p.wave_type = (WaveType)rand.Next(3);
+					if (p.wave_type == WaveType.Sine && rand.Next(2) == 0)
+					{
+						p.wave_type = (WaveType)rand.Next(2);
+					}
+					p.base_freq = .5f + frnd(.5f);
+					p.freq_limit = p.base_freq - .2f - frnd(.6f);
+					if (p.freq_limit > .2f)
+					{
+						p.freq_limit = .2f;
+					}
+					p.freq_ramp = .15f - frnd(.2f);
+					if (rand.Next(3) == 0)
+					{
+						p.base_freq = .3f + frnd(.6f);
+						p.freq_limit = frnd(.1f);
+						p.freq_ramp = .35f - frnd(.3f);
+					}
+					if (rand.Next(2) == 0)
+					{
+						p.duty = frnd(.5f);
+						p.duty_ramp = frnd(.2f);
+					}
+					else
+					{
+						p.duty = .4f + frnd(.5f);
+						p.duty_ramp = -frnd(.7f);
+					}
+					p.env_attack = 0f;
+					p.env_sustain = .1f + frnd(.2f);
+					p.env_decay = frnd(.4f);
+					if (rand.Next(2) == 0)
+					{
+						p.env_punch = frnd(.3f);
+					}
+					if (rand.Next(3) == 0)
+					{
+						p.pha_offset = frnd(.2f);
+						p.pha_ramp = frnd(.2f);
+					}
+					if (rand.Next(2) == 0)
+					{
+						p.hpf_freq = frnd(.3f);
+					}
 					break;
 				case SoundType.Explosion:
+					p.wave_type = WaveType.Noise;
+					if (rand.Next(2) == 0)
+					{
+						p.base_freq = 0.1f + frnd(0.4f);
+						p.freq_ramp = -0.1f + frnd(0.4f);
+					}
+					else
+					{
+						p.base_freq = 0.2f + frnd(0.7f);
+						p.freq_ramp = -0.2f - frnd(0.2f);
+					}
+					p.base_freq *= p.base_freq;
+					if (rand.Next(5) == 0)
+						p.freq_ramp = 0.0f;
+					if (rand.Next(3) == 0)
+						p.repeat_speed = 0.3f + frnd(0.5f);
+					p.env_attack = 0.0f;
+					p.env_sustain = 0.1f + frnd(0.3f);
+					p.env_decay = frnd(0.5f);
+					if (rand.Next(2) == 0)
+					{
+						p.pha_offset = -0.3f + frnd(0.9f);
+						p.pha_ramp = -frnd(0.3f);
+					}
+					p.env_punch = 0.2f + frnd(0.6f);
+					if (rand.Next(2) == 0)
+					{
+						p.vib_strength = frnd(0.7f);
+						p.vib_speed = frnd(0.6f);
+					}
+					if (rand.Next(3) == 0)
+					{
+						p.arp_speed = 0.6f + frnd(0.3f);
+						p.arp_mod = 0.8f - frnd(1.6f);
+					}
 					break;
 				case SoundType.Powerup:
+					if (rand.Next(2) == 0)
+						p.wave_type = WaveType.Saw;
+					else
+						p.duty = frnd(0.6f);
+					if (rand.Next(2) == 0)
+					{
+						p.base_freq = 0.2f + frnd(0.3f);
+						p.freq_ramp = 0.1f + frnd(0.4f);
+						p.repeat_speed = 0.4f + frnd(0.4f);
+					}
+					else
+					{
+						p.base_freq = 0.2f + frnd(0.3f);
+						p.freq_ramp = 0.05f + frnd(0.2f);
+						if (rand.Next(2) == 0)
+						{
+							p.vib_strength = frnd(0.7f);
+							p.vib_speed = frnd(0.6f);
+						}
+					}
+					p.env_attack = 0.0f;
+					p.env_sustain = frnd(0.4f);
+					p.env_decay = 0.1f + frnd(0.4f);
 					break;
 				case SoundType.Hit:
+					p.wave_type = (WaveType)rand.Next(3);
+					if (p.wave_type == WaveType.Sine)
+						p.wave_type = WaveType.Noise;
+					if (p.wave_type == WaveType.Square)
+						p.duty = frnd(0.6f);
+					p.base_freq = 0.2f + frnd(0.6f);
+					p.freq_ramp = -0.3f - frnd(0.4f);
+					p.env_attack = 0.0f;
+					p.env_sustain = frnd(0.1f);
+					p.env_decay = 0.1f + frnd(0.2f);
+					if (rand.Next(2) == 0)
+						p.hpf_freq = frnd(0.3f);
 					break;
 				case SoundType.Jump:
+					p.duty = frnd(0.6f);
+					p.base_freq = 0.3f + frnd(0.3f);
+					p.freq_ramp = 0.1f + frnd(0.2f);
+					p.env_attack = 0.0f;
+					p.env_sustain = 0.1f + frnd(0.3f);
+					p.env_decay = 0.1f + frnd(0.2f);
+					if (rand.Next(2) == 0)
+						p.hpf_freq = frnd(0.3f);
+					if (rand.Next(2) == 0)
+						p.lpf_freq = 1.0f - frnd(0.6f);
 					break;
 				case SoundType.Blip:
+					p.wave_type = (WaveType)rand.Next(2);
+					if (p.wave_type == WaveType.Square)
+						p.duty = frnd(0.6f);
+					p.base_freq = 0.2f + frnd(0.4f);
+					p.env_attack = 0.0f;
+					p.env_sustain = 0.1f + frnd(0.1f);
+					p.env_decay = frnd(0.2f);
+					p.hpf_freq = 0.1f;
 					break;
 				default:
 					break;
@@ -211,9 +347,9 @@ namespace IECSynth
 		double arp_mod;
 
 		SynthParam p;
-		
 
-		int wave_type = 0;
+
+		int wave_type;
 
 		void ResetSample(bool restart)
 		{
@@ -236,6 +372,7 @@ namespace IECSynth
 				arp_limit = 0;
 			if (!restart)
 			{
+				wave_type = (int)p.wave_type;
 				// reset filter
 				fltp = 0.0f;
 				fltdp = 0.0f;

@@ -24,7 +24,7 @@ namespace IECSound
 		public MainWindow()
 		{
 			InitializeComponent();
-			var p = IECSynth.SynthParam.Init(IECSynth.SoundType.PickUp);
+			var p = IECSynth.SynthParam.Init(IECSynth.SoundType.Blip);
 
 			using(var s = new IECSynth.SynthEngine())
 			{
