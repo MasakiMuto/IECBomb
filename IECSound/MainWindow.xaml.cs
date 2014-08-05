@@ -24,15 +24,36 @@ namespace IECSound
 		public MainWindow()
 		{
 			InitializeComponent();
-			var p = IECSynth.SynthParam.Init(IECSynth.SoundType.Blip);
 
-			using(var s = new IECSynth.SynthEngine())
+			soundTypeList.ItemsSource = Enum.GetValues(typeof(SoundType)).OfType<SoundType>()
+				.Select(x => CreateItem(x));
+		}
+
+		ListBoxItem CreateItem(SoundType x)
+		{
+			var item = new ListBoxItem()
+			{
+				Content = x
+			};
+			item.AddHandler(ListBoxItem.MouseLeftButtonDownEvent, new RoutedEventHandler(ItemSelect), true);
+			return item;
+		}
+
+		void ItemSelect(object sender, RoutedEventArgs e)
+		{
+			var name = (SoundType)(sender as ListBoxItem).Content;
+			PlaySound(name);
+		}
+
+		void PlaySound(SoundType type)
+		{
+			var p = SynthParam.Init((SoundType)type);
+			using (var s = new SynthEngine())
 			{
 				var player = s.SynthFile(p);
 				player.Play();
 			}
-			
-			
 		}
+
 	}
 }
