@@ -100,7 +100,6 @@
     <Compile Include="ParticleControl.Designer.cs">
       <DependentUpon>ParticleControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Synth.cs" />
     <Compile Include="Util.cs" />
     <None Include="XNAControl.cs">
       <SubType>Component</SubType>
