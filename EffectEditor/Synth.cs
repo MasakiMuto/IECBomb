@@ -27,7 +27,35 @@ namespace IECSound
 		Noise
 	}
 
-	public struct SynthParam
+	public enum ParamName
+	{
+		BaseFreq,
+		FreqLimit,
+		FreqRamp,
+		FreqDRamp,
+		Duty,
+		DutyRamp,
+		VibStrength,
+		VibSpeed,
+		VibDelay,
+		EnvAttack,
+		EnvSustain,
+		EnvDecay,
+		EnvPunch,
+		FilterOn,//?
+		LpfResonance,
+		LpfFreq,
+		LpfRamp,
+		HpfFreq,
+		HpfRamp,
+		PhaOffset,
+		PhaRamp,
+		RepeatSpeed,
+		ArpSpeed,
+		ArpMod,
+	}
+
+	public class SynthParam :  Masa.IECBomb.ItemBase<ParamName>
 	{
 		public float base_freq;
 		public float freq_limit;

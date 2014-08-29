@@ -25,6 +25,12 @@ namespace Masa.IECBomb
 			return Min + (Max - Min) * NormalizedValue;
 		}
 
+		public void SetValue(float val)
+		{
+			System.Diagnostics.Debug.Assert(Max >= val && val >= Min);
+			NormalizedValue = (val - Min) / (Max - Min);
+		}
+
 		public override bool Equals(object obj)
 		{
 			return Equals(this, obj as Parameter<T>);
@@ -55,6 +61,10 @@ namespace Masa.IECBomb
 
 		public readonly int Index;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="index">個体通し番号</param>
 		public ItemBase(int index)
 		{
 			Index = index;
@@ -63,6 +73,7 @@ namespace Masa.IECBomb
 		public float this[T name]
 		{
 			get { return Params[name.ToInt32(null)].GetValue(); }
+			set { Params[name.ToInt32(null)].SetValue(value); }
 		}
 
 		public override bool Equals(object obj)

@@ -27,42 +27,104 @@ namespace IECSound
 		Noise
 	}
 
-	public struct SynthParam
+	public enum ParamName
 	{
-		public float base_freq;
-		public float freq_limit;
-		public float freq_ramp;
-		public float freq_dramp;
-		public float duty;
-		public float duty_ramp;
+		BaseFreq,
+		FreqLimit,
+		FreqRamp,
+		FreqDRamp,
+		Duty,
+		DutyRamp,
+		VibStrength,
+		VibSpeed,
+		VibDelay,
+		EnvAttack,
+		EnvSustain,
+		EnvDecay,
+		EnvPunch,
+		//FilterOn,//?
+		LpfResonance,
+		LpfFreq,
+		LpfRamp,
+		HpfFreq,
+		HpfRamp,
+		PhaOffset,
+		PhaRamp,
+		RepeatSpeed,
+		ArpSpeed,
+		ArpMod,
+	}
 
-		public float vib_strength;
-		public float vib_speed;
-		public float vib_delay;
+	public class SynthParam : Masa.IECBomb.ItemBase<ParamName>
+	{
+		public float base_freq { get { return this[ParamName.BaseFreq]; } set { this[ParamName.BaseFreq] = value; } }
+		public float freq_limit { get { return this[ParamName.FreqLimit]; } set { this[ParamName.FreqLimit] = value; } }
+		public float freq_ramp { get { return this[ParamName.FreqRamp]; } set { this[ParamName.FreqRamp] = value; } }
+		public float freq_dramp { get { return this[ParamName.FreqDRamp]; } set { this[ParamName.FreqDRamp] = value; } }
+		public float duty { get { return this[ParamName.Duty]; } set { this[ParamName.Duty] = value; } }
+		public float duty_ramp { get { return this[ParamName.DutyRamp]; } set { this[ParamName.DutyRamp] = value; } }
 
-		public float env_attack;
-		public float env_sustain;
-		public float env_decay;
-		public float env_punch;
+		public float vib_strength { get { return this[ParamName.VibStrength]; } set { this[ParamName.VibStrength] = value; } }
+		public float vib_speed { get { return this[ParamName.VibSpeed]; } set { this[ParamName.VibSpeed] = value; } }
+		public float vib_delay { get { return this[ParamName.VibDelay]; } set { this[ParamName.VibDelay] = value; } }
+
+		public float env_attack { get { return this[ParamName.EnvAttack]; } set { this[ParamName.EnvAttack] = value; } }
+		public float env_sustain { get { return this[ParamName.EnvSustain]; } set { this[ParamName.EnvSustain] = value; } }
+		public float env_decay { get { return this[ParamName.EnvDecay]; } set { this[ParamName.EnvDecay] = value; } }
+		public float env_punch { get { return this[ParamName.EnvPunch]; } set { this[ParamName.EnvPunch] = value; } }
 
 		public bool filter_on;
-		public float lpf_resonance;
-		public float lpf_freq;
-		public float lpf_ramp;
-		public float hpf_freq;
-		public float hpf_ramp;
+		public float lpf_resonance { get { return this[ParamName.LpfResonance]; } set { this[ParamName.LpfResonance] = value; } }
+		public float lpf_freq { get { return this[ParamName.LpfFreq]; } set { this[ParamName.LpfFreq] = value; } }
+		public float lpf_ramp { get { return this[ParamName.LpfRamp]; } set { this[ParamName.LpfRamp] = value; } }
+		public float hpf_freq { get { return this[ParamName.HpfFreq]; } set { this[ParamName.HpfFreq] = value; } }
+		public float hpf_ramp { get { return this[ParamName.HpfRamp]; } set { this[ParamName.HpfRamp] = value; } }
 
-		public float pha_offset;
-		public float pha_ramp;
+		public float pha_offset { get { return this[ParamName.PhaOffset]; } set { this[ParamName.PhaOffset] = value; } }
+		public float pha_ramp { get { return this[ParamName.PhaRamp]; } set { this[ParamName.PhaRamp] = value; } }
 
-		public float repeat_speed;
+		public float repeat_speed { get { return this[ParamName.RepeatSpeed]; } set { this[ParamName.RepeatSpeed] = value; } }
 
-		public float arp_speed;
-		public float arp_mod;
+		public float arp_speed { get { return this[ParamName.ArpSpeed]; } set { this[ParamName.ArpSpeed] = value; } }
+		public float arp_mod { get { return this[ParamName.ArpMod]; } set { this[ParamName.ArpMod] = value; } }
 
 		public WaveType wave_type;
 
 		static Random rand = new Random();
+
+		static int TotalIndex = 0;
+
+		public SynthParam()
+			: base(TotalIndex)
+		{
+			TotalIndex++;
+			Params = new[]{
+				CreateParam(ParamName.BaseFreq, 1.5f, -.5f),
+				CreateParam(ParamName.FreqLimit, 1.5f, -1f),
+				CreateParam(ParamName.FreqRamp, 1f, -1f),
+				CreateParam(ParamName.FreqDRamp, 1f, -1f),
+				CreateParam(ParamName.Duty, 1f, -1f),
+				CreateParam(ParamName.DutyRamp, 1f, -1f),
+				CreateParam(ParamName.VibStrength, 1f, -1f),
+				CreateParam(ParamName.VibSpeed, 1f, -1f),
+				CreateParam(ParamName.VibDelay, 1f, -1f),
+				CreateParam(ParamName.EnvAttack, 1f, -1f),
+				CreateParam(ParamName.EnvSustain, 1f, 0f),
+				CreateParam(ParamName.EnvDecay, 1f, -1f),
+				CreateParam(ParamName.EnvPunch, .8f, 0f),
+				//CreateParam(ParamName.FilterOn,	  0, 0),
+				CreateParam(ParamName.LpfResonance, 1, -1),
+				CreateParam(ParamName.LpfFreq, 2, 0),
+				CreateParam(ParamName.LpfRamp, 1, -1),
+				CreateParam(ParamName.HpfFreq, 1, 0),
+				CreateParam(ParamName.HpfRamp, 1, -1),
+				CreateParam(ParamName.PhaOffset, 1, -1),
+				CreateParam(ParamName.PhaRamp, 1, -1),
+				CreateParam(ParamName.RepeatSpeed, 1, -1),
+				CreateParam(ParamName.ArpSpeed, 1, -1),
+				CreateParam(ParamName.ArpMod, 1, -1),
+			};
+		}
 
 		static float frnd(float max)
 		{
@@ -73,9 +135,31 @@ namespace IECSound
 		{
 			var p = new SynthParam();
 			p.base_freq = .3f;
+			p.freq_limit = 0f;
+			p.freq_ramp = 0;
+			p.freq_dramp = 0;
+			p.duty = 0;
+			p.duty_ramp = 0;
+			p.vib_strength = 0;
+			p.vib_speed = 0;
+			p.vib_delay = 0;
+
+			p.env_attack = 0;
 			p.env_sustain = .3f;
 			p.env_decay = .4f;
+			p.env_punch = 0;
+			p.filter_on = false;
+
+			p.lpf_resonance = 0;
 			p.lpf_freq = 1f;
+			p.lpf_ramp = 0;
+			p.hpf_freq = 0;
+			p.hpf_ramp = 0;
+			p.pha_offset = 0;
+			p.pha_ramp = 0;
+			p.repeat_speed = 0;
+			p.arp_speed = 0;
+			p.arp_mod = 0;
 			p.wave_type = WaveType.Square;
 			switch (type)
 			{
@@ -85,7 +169,7 @@ namespace IECSound
 					p.env_sustain = frnd(.1f);
 					p.env_decay = .1f + frnd(.4f);
 					p.env_punch = .3f + frnd(.3f);
-					if (true)
+					if (rand.Next(2) == 0)
 					{
 						p.arp_speed = .5f + frnd(.2f);
 						p.arp_mod = .2f + frnd(.4f);
@@ -241,6 +325,21 @@ namespace IECSound
 			return p;
 		}
 
+		public override float GetQuantityScore()
+		{
+			throw new NotImplementedException();
+		}
+
+		protected override IEnumerable<ParamName> UnlockedParameters
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		public override float CurrentScore
+		{
+			get { throw new NotImplementedException(); }
+		}
+
 		//public float AttackTime, SustainTime, SustainPunch, DecayTime;//env_***
 
 		//public float StartFreq;//base_freq
@@ -370,9 +469,10 @@ namespace IECSound
 			arp_limit = (int)(Math.Pow(1.0f - p.arp_speed, 2.0f) * 20000 + 32);
 			if (p.arp_speed == 1.0f)
 				arp_limit = 0;
+			wave_type = (int)p.wave_type;
+				
 			if (!restart)
 			{
-				wave_type = (int)p.wave_type;
 				// reset filter
 				fltp = 0.0f;
 				fltdp = 0.0f;
@@ -482,7 +582,7 @@ namespace IECSound
 					if (flthp > 0.1f) flthp = 0.1f;
 				}
 
-				double ssample = 0.0f;
+				float ssample = 0.0f;
 				for (int si = 0; si < 8; si++) // 8x supersampling
 				{
 					double sample = 0.0f;
@@ -514,6 +614,8 @@ namespace IECSound
 						case 3: // noise
 							sample = noise_buffer[phase * 32 / period];
 							break;
+						default:
+							throw new Exception();
 					}
 					// lp filter
 					double pp = fltp;
@@ -540,7 +642,7 @@ namespace IECSound
 					sample += phaser_buffer[(ipp - iphase + 1024) & 1023];
 					ipp = (ipp + 1) & 1023;
 					// final accumulation and envelope application
-					ssample += sample * env_vol;
+					ssample += (float)(sample * env_vol);
 				}
 				ssample = ssample / 8 * master_vol;
 
