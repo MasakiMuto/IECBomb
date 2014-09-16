@@ -21,10 +21,13 @@ namespace IECSound
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		SynthParam currentParam;
+		Manager manager;
+
 		public MainWindow()
 		{
 			InitializeComponent();
-
+			manager = new Manager();
 			soundTypeList.ItemsSource = Enum.GetValues(typeof(SoundType)).OfType<SoundType>()
 				.Select(x => CreateItem(x));
 		}
@@ -47,11 +50,19 @@ namespace IECSound
 
 		void PlaySound(SoundType type)
 		{
-			var p = SynthParam.Init((SoundType)type);
+			currentParam = SynthParam.Init((SoundType)type);
 			using (var s = new SynthEngine())
 			{
-				var player = s.SynthFile(p);
+				var player = s.SynthFile(currentParam);
 				player.Play();
+			}
+		}
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			if (currentParam != null)
+			{
+				manager.Start(currentParam);
 			}
 		}
 

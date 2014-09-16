@@ -5,8 +5,13 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
-            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition Width="0.3*"/>
         </Grid.ColumnDefinitions>
-        <ListBox x:Name="soundTypeList" Grid.Column="1"/>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="0.2*" />
+        </Grid.RowDefinitions>
+        <ListBox x:Name="soundTypeList" Grid.Column="1" Grid.Row="0"/>
+        <Button Content="Start" Grid.Column="1" Grid.Row="1" Click="Button_Click" />
     </Grid>
 </Window>

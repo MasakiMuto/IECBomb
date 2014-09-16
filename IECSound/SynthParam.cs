@@ -340,6 +340,22 @@ namespace IECSound
 			get { throw new NotImplementedException(); }
 		}
 
+		public static SynthParam Mutate(SynthParam origin)
+		{
+			const double ParamMutateRatio = 0.05;
+			var p = new SynthParam();
+			p.wave_type = origin.wave_type;
+			p.filter_on = origin.filter_on;
+			for (int i = 0; i < p.Params.Length; i++)
+			{
+				if (rand.NextDouble() < ParamMutateRatio)
+				{
+					p.Params[i].NormalizedValue = origin.Params[i].NormalizedValue + (float)(rand.NextDouble() * 2 - 1);
+				}
+			}
+			return p;
+		}
+
 		//public float AttackTime, SustainTime, SustainPunch, DecayTime;//env_***
 
 		//public float StartFreq;//base_freq

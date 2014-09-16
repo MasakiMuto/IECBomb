@@ -10,7 +10,15 @@ namespace Masa.IECBomb
 	public class Parameter<T> : IEqualityComparer<Parameter<T>> where T : struct, IComparable, IConvertible
 	{
 		public readonly float Max, Min;
-		public float NormalizedValue;//0..1に正規化した値
+		float normalizedValue;
+		public float NormalizedValue///0..1に正規化した値
+		{
+			get { return normalizedValue; }
+			set
+			{
+				normalizedValue = MathHelper.Clamp(value, 0, 1);
+			}
+		}
 		public readonly T Name;
 
 		public Parameter(T name, float max, float min)

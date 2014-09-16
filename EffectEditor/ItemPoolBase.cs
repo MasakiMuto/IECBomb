@@ -8,14 +8,14 @@ namespace Masa.IECBomb
 {
 	public abstract class ItemPoolBase<T, S>  where T : ItemBase<S>, new() where S : struct, IComparable, IConvertible
 	{
-		readonly int PoolSize;
-		T[] items;
+		protected readonly int PoolSize;
+		protected T[] items;
 		float[] scores;
-		Random rand;
+		protected Random rand;
 		public int Generation { get; private set; }
 
-		readonly float CrossOverRatio = .05f;
-		readonly float MutationRatio = .1f;
+		protected readonly float CrossOverRatio = .05f;
+		protected readonly float MutationRatio = .1f;
 
 		public ItemPoolBase(int poolSize)
 		{
@@ -28,7 +28,6 @@ namespace Masa.IECBomb
 
 		public void Reset()
 		{
-			EvalManager.Instance.Reset();
 			for (int i = 0; i < PoolSize; i++)
 			{
 				items[i] = ItemBase<S>.RandomCreate<T>(rand);

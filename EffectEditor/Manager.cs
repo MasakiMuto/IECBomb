@@ -55,6 +55,7 @@ namespace Masa.IECBomb
 		public void Reset()
 		{
 			pool.Reset();
+			EvalManager.Instance.Reset();
 		}
 
 		public void Input(int left, int right)

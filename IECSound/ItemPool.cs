@@ -20,5 +20,13 @@ namespace IECSound
 		{
 			Instance = this;
 		}
+
+		public void Init(SynthParam p)
+		{
+			for (int i = 0; i < items.Length; i++)
+			{
+				items[i] = SynthParam.Mutate(p);
+			}
+		}
 	}
 }
