@@ -10,18 +10,18 @@ namespace IECSound
 	{
 		ItemPool pool;
 		EvalManager eval;
-		bool ready;
+		public bool Ready { get; private set; }
 
 		public GAManager()
 		{
-			ready = false;
+			Ready = false;
 			pool = new ItemPool();
 			eval = new EvalManager();
 		}
 
 		public void Start(SynthParam adam)
 		{
-			ready = true;
+			Ready = true;
 			pool.Reset();
 			eval.Reset();
 			pool.Init(adam);
@@ -29,12 +29,24 @@ namespace IECSound
 
 		public void Play(int index)
 		{
-			if (!ready) return;
+			if (!Ready) return;
 			var param = pool[index];
 			using (var synth = new SynthEngine())
 			{
 				synth.SynthFile(param).Play();
 			}
+		}
+
+		public Task PlaySync(int index)
+		{
+			return Task.Run(()=>{
+				if (!Ready) return;
+				using (var synth = new SynthEngine())
+				{
+					synth.SynthFile(pool[index]).PlaySync();
+				}
+			}
+			);
 		}
 
 		public void Update(IEnumerable<int> saved)
@@ -44,7 +56,7 @@ namespace IECSound
 		
 		public void Save(int index)
 		{
-			if (!ready) return;
+			if (!Ready) return;
 			using (var synth = new SynthEngine())
 			{
 				synth.SaveTo(pool[index], "test.wav");

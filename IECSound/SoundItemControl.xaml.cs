@@ -31,10 +31,26 @@ namespace IECSound
 			InitializeComponent();
 		}
 
-		private void Button_Click(object sender, RoutedEventArgs e)
+		async void PlayClick(object sender, RoutedEventArgs e)
 		{
-			window.Manager.Play(Index);
-			//(MainWindow)
+			await Play();
+		}
+
+		public async Task Play()
+		{
+			Activate();
+			await window.Manager.PlaySync(Index);
+			Deactivate();
+		}
+
+		public void Activate()
+		{
+			Background = Brushes.Red;
+		}
+
+		public void Deactivate()
+		{
+			Background = Brushes.Transparent;
 		}
 	}
 }

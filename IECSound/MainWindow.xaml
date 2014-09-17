@@ -18,6 +18,7 @@
         </Grid.RowDefinitions>
         <Button Content="Next" Grid.Column="0" Grid.Row="3" Click="NextButtonClick" />
         <Button Content="Save" Grid.Column="1" Grid.Row="3" Click="SaveButtonClick" />
+        <Button Content="PlayAll" Grid.Column="2" Grid.Row="3" Click="PlayAllClick" />
         <ListBox x:Name="soundTypeList" Grid.Column="3" Grid.Row="0" Grid.RowSpan="3"/>
         <Button Content="Start" Grid.Column="3" Grid.Row="3" Click="StartButtonClick" />
     </Grid>

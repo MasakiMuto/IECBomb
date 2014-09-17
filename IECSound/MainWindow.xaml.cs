@@ -89,6 +89,14 @@ namespace IECSound
 			}
 		}
 
+		private async void PlayAllClick(object sender, RoutedEventArgs e)
+		{
+			for (int i = 0; i < soundControls.Length; i++)
+			{
+				await soundControls[i].Play();
+			}
+		}
+
 		private void NextButtonClick(object sender, RoutedEventArgs e)
 		{
 			Manager.Update(soundControls.Where(x => x.IsChecked).Select(x=>x.Index));

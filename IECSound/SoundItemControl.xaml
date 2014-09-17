@@ -10,7 +10,7 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Button Content="Play" Grid.Row="0" Click="Button_Click"/>
+        <Button Content="Play" Grid.Row="0" Click="PlayClick"/>
         <CheckBox x:Name="check" Content="Save" Grid.Row="1" />
     </Grid>
 </UserControl>
