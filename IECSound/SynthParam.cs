@@ -340,17 +340,28 @@ namespace IECSound
 			get { throw new NotImplementedException(); }
 		}
 
+		SynthParam Clone()
+		{
+			var p = new SynthParam();
+			p.wave_type = wave_type;
+			p.filter_on = filter_on;
+			for (int i = 0; i < p.Params.Length; i++)
+			{
+				p.Params[i].NormalizedValue = Params[i].NormalizedValue;
+					
+			}
+
+			return p;
+		}
+
 		public static SynthParam Mutate(SynthParam origin)
 		{
 			const double ParamMutateRatio = 0.05;
-			var p = new SynthParam();
-			p.wave_type = origin.wave_type;
-			p.filter_on = origin.filter_on;
+			var p = origin.Clone();
 			do
 			{
 				for (int i = 0; i < p.Params.Length; i++)
 				{
-					p.Params[i].NormalizedValue = origin.Params[i].NormalizedValue;
 					if (rand.NextDouble() < ParamMutateRatio)
 					{
 						p.Params[i].NormalizedValue += (float)(rand.NextDouble() * 2 - 1);
@@ -359,6 +370,24 @@ namespace IECSound
 			} while (p == origin);
 			
 			return p;
+		}
+
+		public SynthParam CrossOver(Random rand, SynthParam item2)
+		{
+			var child1 = Clone();
+			var child2 = item2.Clone();
+			int i1, i2;
+			CreateCrossIndexs(rand, out i1, out i2);
+
+			for (int i = 0; i < Params.Length; i++)
+			{
+				if (i1 <= i && i < i2)
+				{
+					child1.Params[i].NormalizedValue = item2.Params[i].NormalizedValue;
+					child2.Params[i].NormalizedValue = Params[i].NormalizedValue;
+				}
+			}
+			return child1;
 		}
 
 		//public float AttackTime, SustainTime, SustainPunch, DecayTime;//env_***

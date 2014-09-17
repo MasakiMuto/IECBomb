@@ -121,7 +121,7 @@ namespace Masa.IECBomb
 		/// 完全なクローンを返す
 		/// </summary>
 		/// <returns></returns>
-		public S Clone<S>() where S : ItemBase<T>, new()
+		public virtual S Clone<S>() where S : ItemBase<T>, new()
 		{
 			var item = new S();
 			for (int i = 0; i < Params.Length; i++)
@@ -157,19 +157,14 @@ namespace Masa.IECBomb
 		/// <returns></returns>
 		public S[] CrossOver<S>(Random rand, S item2) where S : ItemBase<T>, new()
 		{
-			var child1 = new S();
-			var child2 = new S();
+			var child1 = this.Clone<S>();
+			var child2 = item2.Clone<S>();
 			int i1, i2;
 			CreateCrossIndexs(rand, out i1, out i2);
 
 			for (int i = 0; i < Params.Length; i++)
 			{
 				if (i1 <= i && i < i2)
-				{
-					child1.Params[i].NormalizedValue = Params[i].NormalizedValue;
-					child2.Params[i].NormalizedValue = item2.Params[i].NormalizedValue;
-				}
-				else
 				{
 					child1.Params[i].NormalizedValue = item2.Params[i].NormalizedValue;
 					child2.Params[i].NormalizedValue = Params[i].NormalizedValue;
@@ -184,7 +179,7 @@ namespace Masa.IECBomb
 		/// <param name="rand"></param>
 		/// <param name="val1">小さい方</param>
 		/// <param name="val2">大きい方</param>
-		void CreateCrossIndexs(Random rand, out int val1, out int val2)
+		protected void CreateCrossIndexs(Random rand, out int val1, out int val2)
 		{
 			int tmp1 = rand.Next(Params.Length);
 			int tmp2 = rand.Next(Params.Length);

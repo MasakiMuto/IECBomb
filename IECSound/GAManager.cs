@@ -51,7 +51,17 @@ namespace IECSound
 
 		public void Update(IEnumerable<int> saved)
 		{
-
+			if (!saved.Any()) return;
+			var a = saved.ToArray();
+			if (a.Length == 1)
+			{
+				pool.Init(pool[a[0]]);
+				return;
+			}
+			else
+			{
+				pool.CrossOver(a);
+			}
 		}
 		
 		public void Save(int index)

@@ -12,7 +12,7 @@ namespace Masa.IECBomb
 		protected T[] items;
 		float[] scores;
 		protected Random rand;
-		public int Generation { get; private set; }
+		public int Generation { get; protected set; }
 
 		protected readonly float CrossOverRatio = .05f;
 		protected readonly float MutationRatio = .1f;
