@@ -55,10 +55,17 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="EvalManager.cs" />
+    <Compile Include="SoundItemControl.xaml.cs">
+      <DependentUpon>SoundItemControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ItemPool.cs" />
-    <Compile Include="Manager.cs" />
+    <Compile Include="GAManager.cs" />
     <Compile Include="SynthParam.cs" />
     <Compile Include="SynthEngine.cs" />
+    <Page Include="SoundItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

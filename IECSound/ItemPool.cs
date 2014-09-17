@@ -23,7 +23,8 @@ namespace IECSound
 
 		public void Init(SynthParam p)
 		{
-			for (int i = 0; i < items.Length; i++)
+			items[0] = p;
+			for (int i = 1; i < items.Length; i++)
 			{
 				items[i] = SynthParam.Mutate(p);
 			}

@@ -1,17 +1,24 @@
 ﻿<Window x:Class="IECSound.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:my="clr-namespace:IECSound"
         Title="MainWindow" Height="350" Width="525">
-    <Grid>
+    <Grid x:Name="grid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
-            <ColumnDefinition Width="0.3*"/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition />
-            <RowDefinition Height="0.2*" />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height="0.5*"/>
         </Grid.RowDefinitions>
-        <ListBox x:Name="soundTypeList" Grid.Column="1" Grid.Row="0"/>
-        <Button Content="Start" Grid.Column="1" Grid.Row="1" Click="Button_Click" />
+        <Button Content="Next" Grid.Column="0" Grid.Row="3" Click="NextButtonClick" />
+        <Button Content="Save" Grid.Column="1" Grid.Row="3" Click="SaveButtonClick" />
+        <ListBox x:Name="soundTypeList" Grid.Column="3" Grid.Row="0" Grid.RowSpan="3"/>
+        <Button Content="Start" Grid.Column="3" Grid.Row="3" Click="StartButtonClick" />
     </Grid>
 </Window>

@@ -22,14 +22,28 @@ namespace IECSound
 	public partial class MainWindow : Window
 	{
 		SynthParam currentParam;
-		Manager manager;
+		public GAManager Manager { get; private set; }
+		SoundItemControl[] soundControls;
 
 		public MainWindow()
 		{
 			InitializeComponent();
-			manager = new Manager();
+			Manager = new GAManager();
 			soundTypeList.ItemsSource = Enum.GetValues(typeof(SoundType)).OfType<SoundType>()
 				.Select(x => CreateItem(x));
+			soundControls = Enumerable.Range(0, 9)
+				.Select(i =>
+				{
+					var item = new SoundItemControl(i, this);
+					item.SetValue(Grid.RowProperty, i / 3);
+					item.SetValue(Grid.ColumnProperty, i % 3);
+					return item;
+				})
+				.ToArray();
+			foreach (var item in soundControls)
+			{
+				grid.Children.Add(item);
+			}
 		}
 
 		ListBoxItem CreateItem(SoundType x)
@@ -58,12 +72,26 @@ namespace IECSound
 			}
 		}
 
-		private void Button_Click(object sender, RoutedEventArgs e)
+		private void StartButtonClick(object sender, RoutedEventArgs e)
 		{
 			if (currentParam != null)
 			{
-				manager.Start(currentParam);
+				Manager.Start(currentParam);
 			}
+		}
+
+		private void SaveButtonClick(object sender, RoutedEventArgs e)
+		{
+			var target = soundControls.FirstOrDefault(x => x.IsChecked);
+			if (target != null)
+			{
+				Manager.Save(target.Index);
+			}
+		}
+
+		private void NextButtonClick(object sender, RoutedEventArgs e)
+		{
+
 		}
 
 	}

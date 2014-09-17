@@ -26,6 +26,12 @@ namespace IECSound
 		public System.Media.SoundPlayer SynthFile(SynthParam p)
 		{
 			var path = Path.GetTempFileName();
+			SaveTo(p, path);
+			return new System.Media.SoundPlayer(path);
+		}
+
+		public void SaveTo(SynthParam p, string path)
+		{
 			writer = new BinaryWriter(File.OpenWrite(path));
 			long size = WriteHeader();
 			sampleCount = 0;
@@ -41,7 +47,7 @@ namespace IECSound
 
 			WriteFooter(size);
 			writer.Close();
-			return new System.Media.SoundPlayer(path);
+			
 		}
 
 		float master_vol = 0.05f;
