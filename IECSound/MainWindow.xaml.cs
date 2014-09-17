@@ -91,7 +91,7 @@ namespace IECSound
 
 		private void NextButtonClick(object sender, RoutedEventArgs e)
 		{
-
+			Manager.Update(soundControls.Where(x => x.IsChecked).Select(x=>x.Index));
 		}
 
 	}

@@ -36,6 +36,12 @@ namespace IECSound
 				synth.SynthFile(param).Play();
 			}
 		}
+
+		public void Update(IEnumerable<int> saved)
+		{
+
+		}
+		
 		public void Save(int index)
 		{
 			if (!ready) return;
@@ -44,5 +50,7 @@ namespace IECSound
 				synth.SaveTo(pool[index], "test.wav");
 			}
 		}
+
+
 	}
 }

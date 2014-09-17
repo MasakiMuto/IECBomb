@@ -346,13 +346,18 @@ namespace IECSound
 			var p = new SynthParam();
 			p.wave_type = origin.wave_type;
 			p.filter_on = origin.filter_on;
-			for (int i = 0; i < p.Params.Length; i++)
+			do
 			{
-				if (rand.NextDouble() < ParamMutateRatio)
+				for (int i = 0; i < p.Params.Length; i++)
 				{
-					p.Params[i].NormalizedValue = origin.Params[i].NormalizedValue + (float)(rand.NextDouble() * 2 - 1);
+					p.Params[i].NormalizedValue = origin.Params[i].NormalizedValue;
+					if (rand.NextDouble() < ParamMutateRatio)
+					{
+						p.Params[i].NormalizedValue += (float)(rand.NextDouble() * 2 - 1);
+					}
 				}
-			}
+			} while (p == origin);
+			
 			return p;
 		}
 
