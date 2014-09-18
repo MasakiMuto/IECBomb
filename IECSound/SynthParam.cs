@@ -38,7 +38,7 @@ namespace IECSound
 		DutyRamp,
 		VibStrength,
 		VibSpeed,
-		VibDelay,
+		//VibDelay,
 		EnvAttack,
 		EnvSustain,
 		EnvDecay,
@@ -67,7 +67,7 @@ namespace IECSound
 
 		public float vib_strength { get { return this[ParamName.VibStrength]; } set { this[ParamName.VibStrength] = value; } }
 		public float vib_speed { get { return this[ParamName.VibSpeed]; } set { this[ParamName.VibSpeed] = value; } }
-		public float vib_delay { get { return this[ParamName.VibDelay]; } set { this[ParamName.VibDelay] = value; } }
+		//public float vib_delay { get { return this[ParamName.VibDelay]; } set { this[ParamName.VibDelay] = value; } }
 
 		public float env_attack { get { return this[ParamName.EnvAttack]; } set { this[ParamName.EnvAttack] = value; } }
 		public float env_sustain { get { return this[ParamName.EnvSustain]; } set { this[ParamName.EnvSustain] = value; } }
@@ -108,7 +108,7 @@ namespace IECSound
 				CreateParam(ParamName.DutyRamp, 1f, -1f),
 				CreateParam(ParamName.VibStrength, 1f, -1f),
 				CreateParam(ParamName.VibSpeed, 1f, -1f),
-				CreateParam(ParamName.VibDelay, 1f, -1f),
+				//CreateParam(ParamName.VibDelay, 1f, -1f),
 				CreateParam(ParamName.EnvAttack, 1f, -1f),
 				CreateParam(ParamName.EnvSustain, 1f, 0f),
 				CreateParam(ParamName.EnvDecay, 1f, -1f),
@@ -151,7 +151,7 @@ namespace IECSound
 			p.duty_ramp = 0;
 			p.vib_strength = 0;
 			p.vib_speed = 0;
-			p.vib_delay = 0;
+			//p.vib_delay = 0;
 
 			p.env_attack = 0;
 			p.env_sustain = .3f;

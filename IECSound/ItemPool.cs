@@ -43,7 +43,7 @@ namespace IECSound
 				if (!index.Contains(i))
 				{
 					var p = GetPair(index.Length);
-					items[i] = SynthParam.Mutate(parent[p.Item1].CrossOver(rand, parent[p.Item2]));
+					items[i] = parent[p.Item1].CrossOver(rand, parent[p.Item2]);
 				}
 			}
 			Generation++;
