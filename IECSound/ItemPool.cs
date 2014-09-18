@@ -25,13 +25,13 @@ namespace IECSound
 		/// 1個体をオリジナルに変異体で構成する
 		/// </summary>
 		/// <param name="p"></param>
-		public void Init(SynthParam p)
+		public void Init(SynthParam p, int index)
 		{
-			items[0] = p;
-			for (int i = 1; i < items.Length; i++)
+			for (int i = 0; i < items.Length; i++)
 			{
 				items[i] = SynthParam.Mutate(p);
 			}
+			items[index] = p;
 			Generation++;
 		}
 

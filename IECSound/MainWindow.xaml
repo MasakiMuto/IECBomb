@@ -4,6 +4,12 @@
         xmlns:my="clr-namespace:IECSound"
         Title="MainWindow" Height="350" Width="525">
     <Grid x:Name="grid">
+        <Grid.Resources>
+            <Style TargetType="Button">
+                <Setter Property="Margin" Value="5" />
+            </Style>
+        </Grid.Resources>
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>

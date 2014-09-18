@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Diagnostics;
 
 namespace IECSound
 {
@@ -356,7 +357,8 @@ namespace IECSound
 
 		public static SynthParam Mutate(SynthParam origin)
 		{
-			const double ParamMutateRatio = 0.05;
+			const double ParamMutateRatio = 0.08;
+			const float ParamMutateAmount = 0.3f;
 			var p = origin.Clone();
 			do
 			{
@@ -364,7 +366,7 @@ namespace IECSound
 				{
 					if (rand.NextDouble() < ParamMutateRatio)
 					{
-						p.Params[i].NormalizedValue += (float)(rand.NextDouble() * 2 - 1);
+						p.Params[i].NormalizedValue += (float)(rand.NextDouble() * 2 - 1) * ParamMutateAmount;
 					}
 				}
 			} while (p == origin);
@@ -374,8 +376,8 @@ namespace IECSound
 
 		public SynthParam CrossOver(Random rand, SynthParam item2)
 		{
-			var child1 = Clone();
-			var child2 = item2.Clone();
+			Debug.Assert(this != item2);
+			var child = Clone();
 			int i1, i2;
 			CreateCrossIndexs(rand, out i1, out i2);
 
@@ -383,11 +385,17 @@ namespace IECSound
 			{
 				if (i1 <= i && i < i2)
 				{
-					child1.Params[i].NormalizedValue = item2.Params[i].NormalizedValue;
-					child2.Params[i].NormalizedValue = Params[i].NormalizedValue;
+					child.Params[i].NormalizedValue = item2.Params[i].NormalizedValue;
 				}
 			}
-			return child1;
+			if (this != child && item2 != child)
+			{
+				return child;
+			}
+			else
+			{
+				return CrossOver(rand, item2);
+			}
 		}
 
 		//public float AttackTime, SustainTime, SustainPunch, DecayTime;//env_***

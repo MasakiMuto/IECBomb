@@ -24,7 +24,7 @@ namespace IECSound
 			Ready = true;
 			pool.Reset();
 			eval.Reset();
-			pool.Init(adam);
+			pool.Init(adam, 0);
 		}
 
 		public void Play(int index)
@@ -55,7 +55,7 @@ namespace IECSound
 			var a = saved.ToArray();
 			if (a.Length == 1)
 			{
-				pool.Init(pool[a[0]]);
+				pool.Init(pool[a[0]], a[0]);
 				return;
 			}
 			else
