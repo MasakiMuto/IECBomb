@@ -74,7 +74,7 @@ namespace IECSound
 		public float env_decay { get { return this[ParamName.EnvDecay]; } set { this[ParamName.EnvDecay] = value; } }
 		public float env_punch { get { return this[ParamName.EnvPunch]; } set { this[ParamName.EnvPunch] = value; } }
 
-		public bool filter_on;
+		//public bool filter_on;
 		public float lpf_resonance { get { return this[ParamName.LpfResonance]; } set { this[ParamName.LpfResonance] = value; } }
 		public float lpf_freq { get { return this[ParamName.LpfFreq]; } set { this[ParamName.LpfFreq] = value; } }
 		public float lpf_ramp { get { return this[ParamName.LpfRamp]; } set { this[ParamName.LpfRamp] = value; } }
@@ -127,6 +127,14 @@ namespace IECSound
 			};
 		}
 
+		public override bool Equals(object obj)
+		{
+			var p = obj as SynthParam;
+			return base.Equals(obj) 
+				//&& p.filter_on == this.filter_on 
+				&& p.wave_type == this.wave_type;
+		}
+
 		static float frnd(float max)
 		{
 			return (float)rand.NextDouble() * max;
@@ -149,7 +157,7 @@ namespace IECSound
 			p.env_sustain = .3f;
 			p.env_decay = .4f;
 			p.env_punch = 0;
-			p.filter_on = false;
+			//p.filter_on = false;
 
 			p.lpf_resonance = 0;
 			p.lpf_freq = 1f;
@@ -345,7 +353,7 @@ namespace IECSound
 		{
 			var p = new SynthParam();
 			p.wave_type = wave_type;
-			p.filter_on = filter_on;
+			//p.filter_on = filter_on;
 			for (int i = 0; i < p.Params.Length; i++)
 			{
 				p.Params[i].NormalizedValue = Params[i].NormalizedValue;
